@@ -93,17 +93,22 @@ async function divine(api: types.IExtensionApi,
     try {
       const command = `"${exe}" ${args.join(' ')}`;
       const { stdout, stderr } = await exec(command, execOpts);
-      if (!!stderr) {
-        return reject(new Error(`divine.exe failed: ${stderr}`));
+      
+      // Convert stdout to string if it's a Buffer
+      const stdoutStr = Buffer.isBuffer(stdout) ? stdout.toString() : stdout;
+      const stderrStr = Buffer.isBuffer(stderr) ? stderr.toString() : stderr;
+      
+      if (!!stderrStr) {
+        return reject(new Error(`divine.exe failed: ${stderrStr}`));
       }
-      if (!stdout && action !== 'list-package') {
+      if (!stdoutStr && action !== 'list-package') {
         return resolve({ stdout: '', returnCode: 2 })
       }      
-      if (['error', 'fatal'].some(x => stdout.toLowerCase().startsWith(x))) {
+      if (['error', 'fatal'].some(x => stdoutStr.toLowerCase().startsWith(x))) {
         // Really?
-        return reject(new Error(`divine.exe failed: ${stdout}`));
+        return reject(new Error(`divine.exe failed: ${stdoutStr}`));
       } else  {
-        return resolve({ stdout, returnCode: 0 });
+        return resolve({ stdout: stdoutStr, returnCode: 0 });
       }
     } catch (err) {
       if (err.code === 'ENOENT') {

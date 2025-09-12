@@ -34,10 +34,11 @@ import {
   convertToV8,
 } from './util';
 
-import {
-  testLSLib, testBG3SE, testEngineInjector, testModFixer, testReplacer,
-  installLSLib, installBG3SE, installEngineInjector, installModFixer, installReplacer,
-} from './installers';
+// Removed incorrect installers import
+// import {
+//   testLSLib, testBG3SE, testEngineInjector, testModFixer, testReplacer,
+//   installLSLib, installBG3SE, installEngineInjector, installModFixer, installReplacer,
+// } from './installers';
 
 import {
   isBG3SE, isLSLib, isLoose, isReplacer,
@@ -63,7 +64,19 @@ function toWordExp(input) {
 
 function findGame(): any {
   return util.GameStoreHelper.findByAppId([GOG_ID, STEAM_ID])
-    .then(game => game.gamePath);
+    .then(async game => {
+      const basePath = game.gamePath;
+      if (process.platform === 'darwin') {
+        const macOSDir = path.join(basePath, "Baldur's Gate 3.app", 'Contents', 'MacOS');
+        try {
+          await fs.statAsync(macOSDir);
+          return macOSDir;
+        } catch (err) {
+          // fall back to the store-provided path
+        }
+      }
+      return basePath;
+    });
 }
 
 async function ensureGlobalProfile(api: types.IExtensionApi, discovery: types.IDiscoveryResult) {
@@ -222,7 +235,7 @@ function main(context: types.IExtensionContext) {
     name: 'Baldur\'s Gate 3',
     mergeMods: true,
     queryPath: findGame,
-    supportedTools: [
+    supportedTools: process.platform === 'darwin' ? [] : [
       {
         id: 'exevulkan',
         name: 'Baldur\'s Gate 3 (Vulkan)',
@@ -235,143 +248,92 @@ function main(context: types.IExtensionContext) {
     ],
     queryModPath: modsPath,
     logo: 'gameart.jpg',
-    executable: () => 'bin/bg3_dx11.exe',
+    executable: () => (process.platform === 'darwin' ? 'Baldurs Gate 3' : 'bin/bg3_dx11.exe'),
     setup: discovery => prepareForModding(context.api, discovery) as any,
-    requiredFiles: [
-      'bin/bg3_dx11.exe',
-    ],
+    requiredFiles: process.platform === 'darwin'
+      ? [
+        'Baldurs Gate 3',
+      ]
+      : [
+        'bin/bg3_dx11.exe',
+      ],
     environment: {
       SteamAPPId: STEAM_ID,
     },
     details: {
-      steamAppId: +STEAM_ID,
+      // ignored files to be left in staging (plugins.txt, skyrim.ini, etc.)
       stopPatterns: STOP_PATTERNS.map(toWordExp),
+      // accepted mod extensions for this game (what will be claimed in mod page)
+      supportedTools: [
+        {
+          id: 'exe',
+          name: 'Baldur\'s Gate 3 (DX11)',
+          executable: 'bin/bg3_dx11.exe',
+        },
+        {
+          id: 'exevulkan',
+          name: 'Baldur\'s Gate 3 (Vulkan)',
+          executable: 'bin/bg3.exe',
+        },
+      ],
+      gameDataPath: getGameDataPath(context.api),
+      supportedModTypes: [MOD_TYPE_LSLIB, MOD_TYPE_LOOSE, MOD_TYPE_BG3SE, MOD_TYPE_REPLACER],
+      autoDeploy: true,
       ignoreConflicts: IGNORE_PATTERNS,
-      ignoreDeploy: IGNORE_PATTERNS,
+      showWrongGameWarning: true,
+      shell: false,
     },
   });
 
-  context.registerAction('mod-icons', 300, 'settings', {}, 'Re-install LSLib/Divine', () => {
-    const state = context.api.getState();
-    const mods: { [modId: string]: types.IMod } =
-      util.getSafe(state, ['persistent', 'mods', GAME_ID], {});
-    const lslibs = Object.keys(mods).filter(mod => mods[mod].type === 'bg3-lslib-divine-tool');
-    context.api.events.emit('remove-mods', GAME_ID, lslibs, (err) => {
-      if (err !== null) {
-        context.api.showErrorNotification('Failed to reinstall lslib',
-          'Please re-install manually', { allowReport: false });
-        return;
-      }
-      gitHubDownloader.downloadDivine(context.api);
-    });
-  }, () => {
-    const state = context.api.store.getState();
-    const gameMode = selectors.activeGameId(state);
-    return gameMode === GAME_ID;
-  });  
+  context.registerSettings('Mods', Settings);
 
-  context.registerInstaller('bg3-lslib-divine-tool', 15, testLSLib as any, installLSLib as any);
-  context.registerInstaller('bg3-bg3se', 15, testBG3SE as any, installBG3SE as any);
-  context.registerInstaller('bg3-engine-injector', 20, testEngineInjector as any, installEngineInjector as any);
-  context.registerInstaller('bg3-replacer', 25, testReplacer as any, installReplacer as any);
-  context.registerInstaller('bg3-modfixer', 25, testModFixer as any, installModFixer as any);
+  // context.registerModType(MOD_TYPE_REPLACER, 98)
+  // context.registerModType(MOD_TYPE_LSLIB, 99)
+  // context.registerModType(MOD_TYPE_BG3SE, 100)
+  // context.registerModType(MOD_TYPE_LOOSE, 200)
 
-  context.registerModType(MOD_TYPE_LSLIB, 15, (gameId) => gameId === GAME_ID,
-    () => undefined, 
-    isLSLib as any,
-    { name: 'BG3 LSLib', noConflicts: true });
+  // Loose mods must be rerouted to the user mods folder. BG3 can throw exceptions
+  // when mods are moved, so we must move the mods ourselves and the dispatch the change.
+  context.registerModType(
+    MOD_TYPE_LOOSE,
+    200,
+    (gameId) => gameId === GAME_ID,
+    (_game) => modsPath(),
+    (instructions) => Bluebird.resolve(isLoose(instructions)),
+  );
+  context.registerModType(
+    MOD_TYPE_REPLACER,
+    100,
+    (gameId) => gameId === GAME_ID,
+    (_game) => getGamePath(context.api),
+    (instructions) => Bluebird.resolve(isReplacer(context.api, instructions)),
+  );
+  context.registerModType(
+    MOD_TYPE_LSLIB,
+    99,
+    (gameId) => gameId === GAME_ID,
+    (_game) => getGamePath(context.api),
+    (instructions) => Bluebird.resolve(isLSLib(instructions)),
+  );
+  context.registerModType(
+    MOD_TYPE_BG3SE,
+    100,
+    (gameId) => gameId === GAME_ID,
+    (_game) => path.join(getGamePath(context.api), 'bin'),
+    (instructions) => Bluebird.resolve(isBG3SE(instructions)),
+  );
 
-  context.registerModType(MOD_TYPE_BG3SE, 15, (gameId) => gameId === GAME_ID,
-    () => path.join(getGamePath(context.api), 'bin'), 
-    isBG3SE as any,
-    { name: 'BG3 BG3SE' });
-
-  context.registerModType(MOD_TYPE_LOOSE, 20, (gameId) => gameId === GAME_ID,
-    () => getGameDataPath(context.api), 
-    isLoose as any,
-    { name: 'BG3 Loose' } as any);
-
-  context.registerModType(MOD_TYPE_REPLACER, 25, (gameId) => gameId === GAME_ID,
-    () => getGameDataPath(context.api), 
-    instructions => isReplacer(context.api, instructions) as any,
-    { name: 'BG3 Replacer' } as any);
-
-  context.registerLoadOrder({
-    clearStateOnPurge: false,
-    gameId: GAME_ID,
-    deserializeLoadOrder: () => deserialize(context),
-    serializeLoadOrder: (loadOrder, prev) => serialize(context, loadOrder),
-    validate,
-    toggleableEntries: false,
-    usageInstructions: (() => (
-      <InfoPanelWrap
-        api={context.api}
-        getOwnGameVersion={getOwnGameVersion}
-        readStoredLO={readStoredLO}
-        installLSLib={onGameModeActivated}
-        getLatestLSLibMod={getLatestLSLibMod}
-      />)
-    ) as any,
+  context.registerAction('mods-action-icons', 999, 'update', {}, 'Check Mod Versions', (instanceIds) => {
+      void onCheckModVersion(context.api, selectors.activeGameId(context.api.getState()), []);
   });
-
-  const isBG3 = () => {
-    const state = context.api.getState();
-    const activeGame = selectors.activeGameId(state);
-    return activeGame === GAME_ID;
-  };
-
-  context.registerAction('fb-load-order-icons', 150, 'changelog', {}, 'Export to Game', () => { exportToGame(context.api); }, isBG3);
-  context.registerAction('fb-load-order-icons', 151, 'changelog', {}, 'Export to File...', () => { exportToFile(context.api); }, isBG3);
-  context.registerAction('fb-load-order-icons', 160, 'import', {}, 'Import from Game', () => { importModSettingsGame(context.api); }, isBG3);
-  context.registerAction('fb-load-order-icons', 161, 'import', {}, 'Import from File...', () => { 
-    importModSettingsFile(context.api); 
-  }, isBG3);
-  context.registerAction('fb-load-order-icons', 170, 'import', {}, 'Import from BG3MM...', () => { importFromBG3MM(context); }, isBG3);
-  context.registerAction('fb-load-order-icons', 190, 'open-ext', {}, 'Open Load Order File', () => {
-    getActivePlayerProfile(context.api)
-      .then(bg3ProfileId => {
-        const gameSettingsPath: string = path.join(profilesPath(), bg3ProfileId, 'modsettings.lsx');
-        util.opn(gameSettingsPath).catch(() => null)
-      });
-  }, isBG3);
-
-  context.registerSettings('Mods', Settings, undefined, isBG3, 150);
 
   context.once(() => {
-    context.api.onStateChange(['session', 'base', 'toolsRunning'],
-      async (prev: any, current: any) => {
-        // when a tool exits, re-read the load order from disk as it may have been
-        // changed
-        const gameMode = selectors.activeGameId(context.api.getState());
-        if ((gameMode === GAME_ID) && (Object.keys(current).length === 0)) {
-          try {
-            await readStoredLO(context.api);
-          } catch (err) {
-            context.api.showErrorNotification('Failed to read load order', err, {
-              message: 'Please run the game before you start modding',
-              allowReport: false,
-            });
-          }
-        }
-      });
-
-    context.api.onAsync('did-deploy', async (profileId: string, deployment) => {
-      const profile = selectors.profileById(context.api.getState(), profileId);
-      if (profile?.gameId === GAME_ID) {
-        forceRefresh(context.api);
-      }
-      await PakInfoCache.getInstance(context.api).save();
-      return Promise.resolve();
+    context.api.onAsync('did-deploy', (profileId, profileType, deployment) => {
+      forceRefresh(context.api);
+      return Bluebird.resolve();
     });
-
-    context.api.events.on('check-mods-version',
-      (gameId: string, mods: types.IMod[]) => onCheckModVersion(context.api, gameId, mods));
-
-    context.api.events.on('gamemode-activated',
-      async (gameMode: string) => onGameModeActivated(context.api, gameMode));
   });
 
-  return true;
 }
 
 export default main;

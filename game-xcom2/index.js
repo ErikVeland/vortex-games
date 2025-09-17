@@ -48,13 +48,13 @@ https://www.gog.com/forum/xcom_2/actually_where_do_mods_go_in_this_version/page1
 
 function findGame() {
   return util.GameStoreHelper.findByAppId([STEAMAPP_ID, GOGAPP_ID, EPICAPP_ID])
-      .then(game => game.gamePath);
+    .then(game => game.gamePath);
 }
 
 function findDevTools(game) {
   const steamId = game === XCOM2_ID ? X2DEVTOOLSSTEAMAPP_ID : WOTCDEVTOOLSSTEAMAPP_ID;
   return util.GameStoreHelper.findByAppId([steamId])
-      .then(game => game.gamePath);
+    .then(game => game.gamePath);
 }
 
 function prepareForModding(discovery, modPath) {
@@ -198,9 +198,9 @@ async function installMod(files) {
       // Trim off the folder name, in case it doesn't match the modName.
       const shortPath = modFolder != '.' ? file.substr(file.indexOf(modFolder) + modFolder.length) : file;
       return {
-      type: 'copy',
-      source: file,
-      destination: path.join(modName, shortPath)
+        type: 'copy',
+        source: file,
+        destination: path.join(modName, shortPath)
       }
     });
     // Add the instructions to the copy.
@@ -226,13 +226,13 @@ async function deserializeLoadOrder(api, gameId) {
   if (!discovery?.path) return Promise.reject(new util.ProcessCanceled('The game could not be discovered.'));
 
   // Scan the mods folder for directories
-  let folders = [];
+  const folders = [];
   const modsPath = path.join(discovery.path, getModsPath(gameId));
   try {
     // Get everything in the mods folder located in the game directory. 
     const modFolders = await fs.readdirAsync(modsPath);
     // Iterate through the results of the folder scan.
-    for (let idx in modFolders) {
+    for (const idx in modFolders) {
       const entry = modFolders[idx];
       try {
         // Check we're looking at a folder.
@@ -304,7 +304,7 @@ async function deserializeLoadOrder(api, gameId) {
   }
 
   // Use a set to ensure there are no duplicates
-  let loadOrderUniques = new Set([...enabledMods, ...folders, ...workshopMods]);
+  const loadOrderUniques = new Set([...enabledMods, ...folders, ...workshopMods]);
 
   // Map our data into a load order.
   const loadOrder = [...loadOrderUniques].map(xmod => {

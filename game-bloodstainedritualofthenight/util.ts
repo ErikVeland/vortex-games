@@ -24,7 +24,7 @@ export function genProps(context: types.IExtensionContext, profileId?: string): 
   }
 
   const discovery: types.IDiscoveryResult = util.getSafe(state,
-    ['settings', 'gameMode', 'discovered', GAME_ID], undefined);
+                                                         ['settings', 'gameMode', 'discovered', GAME_ID], undefined);
   if (discovery?.path === undefined) {
     return undefined;
   }
@@ -71,7 +71,7 @@ export async function getPakFiles(basePath: string): Promise<string[]> {
       !entry.isDirectory && path.extname(entry.filePath) === MOD_FILE_EXT);
     filePaths = filePaths.concat(filtered.map(entry => entry.filePath));
   }, { recurse: true, skipLinks: true })
-  .catch(err => ['ENOENT', 'ENOTFOUND'].includes(err.code)
-    ? Promise.resolve() : Promise.reject(err))
-  .then(() => Promise.resolve(filePaths));
+    .catch(err => ['ENOENT', 'ENOTFOUND'].includes(err.code)
+      ? Promise.resolve() : Promise.reject(err))
+    .then(() => Promise.resolve(filePaths));
 }

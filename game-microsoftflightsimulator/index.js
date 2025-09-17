@@ -176,13 +176,13 @@ async function requiresLauncher(gamePath) {
     await fsOrig.stat(path.join(gamePath, EXE_NAME))
   } catch (err) {
     return {
-        launcher: 'xbox',
-        addInfo: {
-          appId: MS_APPID,
-          parameters: [
-            { appExecName: 'App' },
-          ],
-        }
+      launcher: 'xbox',
+      addInfo: {
+        appId: MS_APPID,
+        parameters: [
+          { appExecName: 'App' },
+        ],
+      }
     };
   }
 }
@@ -206,7 +206,7 @@ function toWinTimestamp(input) {
  */
 function makeInstallReplacer(api) {
   return async (files, tempPath) => {
-    let possibleTypes = new Set();
+    const possibleTypes = new Set();
     let possibleTargets;
 
     const filesFiltered = files.filter(filePath => !filePath.endsWith(path.sep));
@@ -215,7 +215,7 @@ function makeInstallReplacer(api) {
     // replaced/modified here. For that we go through the list of official files cached earlier
     // to see which object(s) contains the files in the replacer mod
 
-    for (let file of filesFiltered) {
+    for (const file of filesFiltered) {
       const fileId = toFileId(file);
       Object.keys(sOfficialFileList).forEach(type => {
         const targets = sOfficialFileList[type][fileId];
@@ -296,7 +296,7 @@ function makeInstallReplacer(api) {
       return sourcePath;
     };
 
-    let instructions = filesFiltered
+    const instructions = filesFiltered
       .map(filePath => ({
         type: 'copy',
         source: filePath,
@@ -357,10 +357,10 @@ function makeInstallerPack(api) {
       ].concat(files
         .filter(filePath => !filePath.endsWith(path.sep))
         .map(filePath => ({
-        type: 'copy',
-        source: filePath,
-        destination: filePath.split(path.sep).slice(depth).join(path.sep),
-      }))),
+          type: 'copy',
+          source: filePath,
+          destination: filePath.split(path.sep).slice(depth).join(path.sep),
+        }))),
     };
   };
 }
@@ -378,7 +378,7 @@ function makeInstallerPack(api) {
 //      ...
 //    }
 // }
-let sOfficialFileList = {};
+const sOfficialFileList = {};
 
 async function setup() {
   const packagesPath = getPackagesPath();
@@ -403,7 +403,7 @@ async function setup() {
   ];
   let officialPath;
 
-  for (let candidate of candidates) {
+  for (const candidate of candidates) {
     try {
       officialItems = await fs.readdirAsync(candidate);
       officialPath = candidate;
@@ -421,7 +421,7 @@ async function setup() {
     return Promise.reject(new util.SetupError(officialDataMissingTest(...candidates)));
   }
 
-  for (let item of officialItems) {
+  for (const item of officialItems) {
     const [publisher, type, name] = item.split('-');
     if (sOfficialFileList[type] === undefined) {
       sOfficialFileList[type] = {};
@@ -430,7 +430,7 @@ async function setup() {
     if ((publisher === 'asobo') && (name !== undefined)) {
       const itemPath = path.join(officialPath, item);
       await walk(itemPath, entries => {
-        for (let entry of entries) {
+        for (const entry of entries) {
           util.setdefault(sOfficialFileList[type], path.basename(entry.filePath).toUpperCase(), [])
             .push({
               type,
@@ -493,7 +493,7 @@ async function mergeAircraft(mergePath, incomingPath, locId, firstMerge) {
   const existingData = await parser.read(mergePath);
   const incomingData = await parser.read(incomingPath);
 
-  let locTexts = [];
+  const locTexts = [];
 
   // update the numbering of FLTSIM sections
   const existingFLTSIM = Object.keys(existingData.data)
@@ -543,7 +543,7 @@ async function mergeLocalizations(modPath, mergePath, texts, locId) {
 
   await Promise.all(locPakNames.map(async locPakName => {
     try {
-      let locPakIn = JSON.parse(await fs.readFileAsync(path.join(modPath, locPakName)));
+      const locPakIn = JSON.parse(await fs.readFileAsync(path.join(modPath, locPakName)));
       let locPakOut = { LocalisationPackage: {
         Language: locPakIn.LocalisationPackage.Language,
         Strings: {},
@@ -617,7 +617,7 @@ function makeMerge(api) {
     // localization files as well, since mods may use the same ids
     if (locTexts.length > 0) {
       const locFiles = await
-        mergeLocalizations(path.resolve(filePath, '..', '..', '..', '..'), mergePath, locTexts, locId);
+      mergeLocalizations(path.resolve(filePath, '..', '..', '..', '..'), mergePath, locTexts, locId);
       layout.content = layout.content.filter(iter => !locFiles.includes(iter.path));
       layout.content.push(...(await Promise.all(locFiles.map(async locFileName => {
         const stats = await fs.statAsync(path.join(mergePath, locFileName));
@@ -681,7 +681,7 @@ function makeModDeployedName(api) {
   }
 }
 
-let tools = [];
+const tools = [];
 
 let prevLoadOrder;
 
@@ -717,7 +717,7 @@ function main(context) {
                             testSupportedReplacer, makeInstallReplacer(context.api));
 
   context.registerInstaller('msfs-pack', 20,
-    testSupportedPack, makeInstallerPack(context.api));
+                            testSupportedPack, makeInstallerPack(context.api));
 
   context.registerMerge(makeTestMerge(context.api), makeMerge(context.api),  '');
 
@@ -741,10 +741,10 @@ function main(context) {
   });
 
   context.registerModType('msfs-pack', 100, gameId => gameId === GAME_ID,
-    () => findModPath(), () => Promise.resolve(false), {
-      mergeMods: true,
-      name: 'Pack',
-    });
+                          () => findModPath(), () => Promise.resolve(false), {
+                            mergeMods: true,
+                            name: 'Pack',
+                          });
 
   return true;
 }

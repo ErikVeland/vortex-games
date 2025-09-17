@@ -52,7 +52,7 @@ export async function deserialize(context: types.IExtensionContext): Promise<Loa
   const enabledModIds = Object.keys(currentModsState)
     .filter(modId => util.getSafe(currentModsState, [modId, 'enabled'], false));
   const mods: { [modId: string]: types.IMod } = util.getSafe(props.state,
-    ['persistent', 'mods', GAME_ID], {});
+                                                             ['persistent', 'mods', GAME_ID], {});
   const loFilePath = await ensureLOFile(context);
   const fileData = await fs.readFileAsync(loFilePath, { encoding: 'utf8' });
   let data: ILoadOrderEntry[] = [];
@@ -68,9 +68,9 @@ export async function deserialize(context: types.IExtensionContext): Promise<Loa
         }, [
           { label: 'Cancel', action: () => reject(err) },
           { label: 'Regenerate File', action: () => {
-              data = [];
-              return resolve();
-            }
+            data = [];
+            return resolve();
+          }
           }
         ])
       })

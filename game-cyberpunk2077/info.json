@@ -1,6 +1,10 @@
 {
-  "name": "Stub: Cyberpunk 2077",
-  "author": "Nexus Mods",
-  "version": "0.1.0",
-  "description": "This is a stub of the Cyberpunk 2077 extension. It will be downloaded the first time it's managed."
+  "name": "Game: Cyberpunk 2077",
+  "author": "Vortex Team",
+  "version": "1.0.0",
+  "description": "Support for Cyberpunk 2077 including macOS and CrossOver installations",
+  "main": "index.js",
+  "dependencies": {
+    "vortex-api": "^1.0.0"
+  }
 }

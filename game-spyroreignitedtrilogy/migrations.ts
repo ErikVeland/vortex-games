@@ -13,7 +13,7 @@ export async function migrate100(context, oldVersion) {
 
   const state = context.api.store.getState();
   const discoveryPath = util.getSafe(state,
-    ['settings', 'gameMode', 'discovered', GAME_ID, 'path'], undefined);
+                                     ['settings', 'gameMode', 'discovered', GAME_ID, 'path'], undefined);
   const activatorId = selectors.activatorForGame(state, GAME_ID);
   const activator = util.getActivator(activatorId);
   if (discoveryPath === undefined || activator === undefined) {
@@ -21,7 +21,7 @@ export async function migrate100(context, oldVersion) {
   }
 
   const mods: { [modId: string]: types.IMod } = util.getSafe(state,
-    ['persistent', 'mods', GAME_ID], {});
+                                                             ['persistent', 'mods', GAME_ID], {});
   if (Object.keys(mods).length === 0) {
     return Promise.resolve();
   }

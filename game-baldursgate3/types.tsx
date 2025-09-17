@@ -58,7 +58,7 @@ export interface IXmlNode<AttributeT extends object> {
   $: AttributeT;
 }
 
-export interface IAttribute extends IXmlNode<{ id: string, type: string, value: string }> {}
+export type IAttribute = IXmlNode<{ id: string, type: string, value: string }>
 
 export interface IModNode extends IXmlNode<{ id: 'Module' | 'ModuleShortDesc' }> {
   attribute: IAttribute[];
@@ -89,7 +89,7 @@ export type DivineAction = 'create-package' | 'list-package' | 'extract-single-f
                   | 'extract-package' | 'extract-packages' | 'convert-model'
                   | 'convert-models' | 'convert-resource' | 'convert-resources';
 
-                  export interface IDivineOptions {
+export interface IDivineOptions {
   source: string;
   destination?: string;
   expression?: string;

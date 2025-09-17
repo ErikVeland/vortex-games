@@ -18,7 +18,7 @@ function prepareForModding(discovery) {
 
 function isFomod(files) {
   return files.find(file =>
-      (path.basename(file).toLowerCase() === 'moduleconfig.xml')
+    (path.basename(file).toLowerCase() === 'moduleconfig.xml')
       && (path.basename(path.dirname(file)).toLowerCase() === 'fomod'));
 }
 
@@ -108,8 +108,8 @@ function main(context) {
       const now = new Date();
       return Promise.map(deployment[''], file =>
         fs.utimesAsync(path.join(modDeployPath, file.relPath), now, now))
-          .catch(err => context.api.showErrorNotification(
-            'Failed to change file access/modified time', err, { allowReport: false }));
+        .catch(err => context.api.showErrorNotification(
+          'Failed to change file access/modified time', err, { allowReport: false }));
     });
   });
 

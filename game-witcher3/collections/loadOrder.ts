@@ -3,7 +3,7 @@ import { GAME_ID } from '../common';
 import { IW3CollectionsData } from './types';
 
 import { CollectionGenerateError, CollectionParseError,
-  genCollectionLoadOrder } from './util';
+         genCollectionLoadOrder } from './util';
 import { getPersistentLoadOrder } from '../migrations';
 
 export async function exportLoadOrder(api: types.IExtensionApi,

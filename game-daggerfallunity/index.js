@@ -4,7 +4,7 @@ const { fs, util } = require('vortex-api');
 
 const appUni = app || remote.app;
 const LOCAL_LOW = path.resolve(appUni.getPath('appData'),
-  '..', 'LocalLow', 'Daggerfall Workshop', 'Daggerfall Unity');
+                               '..', 'LocalLow', 'Daggerfall Workshop', 'Daggerfall Unity');
 const ENV_LOG = path.join(LOCAL_LOW, 'DFTFU_Environment.log');
 const GAME_ID = 'daggerfallunity';
 const GAME_EXEC = 'DaggerfallUnity.exe';
@@ -63,11 +63,11 @@ function install(files, destinationPath) {
   };
 
   const dfmods = files.filter(file => path.extname(file) === DFMOD_EXT)
-                      .map(mod => path.basename(mod));
-  let filtered = files.filter(file => !file.endsWith(path.sep));
+    .map(mod => path.basename(mod));
+  const filtered = files.filter(file => !file.endsWith(path.sep));
 
   filtered.forEach(file => {
-    let pathLower = path.dirname(file).toLowerCase();
+    const pathLower = path.dirname(file).toLowerCase();
 
     const isWindows = pathLower.indexOf('windows') !== -1;
     const isLinux = pathLower.indexOf('linux') !== -1;
@@ -101,7 +101,7 @@ function install(files, destinationPath) {
 }
 
 function main(context) {
-	context.registerGame({
+  context.registerGame({
     id: GAME_ID,
     name: 'Daggerfall Unity',
     mergeMods: true,
@@ -121,7 +121,7 @@ function main(context) {
   //  at this point
   context.registerInstaller('dfmodmultiplatform', 15, testSupported, install);
 
-	return true
+  return true
 }
 
 module.exports = {

@@ -63,5 +63,5 @@ function main(context) {
 }
 
 module.exports = {
-    default: main
+  default: main
 };

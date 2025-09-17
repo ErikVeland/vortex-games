@@ -19,7 +19,7 @@ function findGame() {
   }
 }
 
-let tools = [
+const tools = [
   {
     id: 'TES5Edit',
     name: 'TES5Edit',

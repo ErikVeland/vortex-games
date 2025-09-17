@@ -21,7 +21,7 @@ function toWordExp(input) {
 
 function findGame() {
   return util.steam.findByAppId(APPID.toString())
-      .then(game => game.gamePath);
+    .then(game => game.gamePath);
 }
 
 function prepareForModding(discovery) {
@@ -79,7 +79,7 @@ async function getTargetData(targetPath) {
     }
     err.message = `Failed to parse "${targetPath}": ${err.message}`;
     log('error', 'failed to read xml file',
-      { targetPath, error: err.message, name: err.name, type: err.prototype.name });
+        { targetPath, error: err.message, name: err.name, type: err.prototype.name });
     throw err;
   }
 }

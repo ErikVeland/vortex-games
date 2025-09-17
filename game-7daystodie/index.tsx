@@ -50,39 +50,39 @@ function setPrefixOffsetDialog(api: types.IExtensionApi) {
         placeholder: 'AAA',
       }],
   }, [ { label: 'Cancel' }, { label: 'Set', default: true } ])
-  .then(result => {
-    if (result.action === 'Set') {
-      const prefix = result.input['7dtdprefixoffsetinput'];
-      let offset = 0;
-      try {
-        offset = reversePrefix(prefix);
-      } catch (err) {
-        return Promise.reject(err);
-      }
-      const state = api.getState();
-      const profileId = selectors.activeProfile(state)?.id;
-      if (profileId === undefined) {
+    .then(result => {
+      if (result.action === 'Set') {
+        const prefix = result.input['7dtdprefixoffsetinput'];
+        let offset = 0;
+        try {
+          offset = reversePrefix(prefix);
+        } catch (err) {
+          return Promise.reject(err);
+        }
+        const state = api.getState();
+        const profileId = selectors.activeProfile(state)?.id;
+        if (profileId === undefined) {
         // How ?
-        api.showErrorNotification('No active profile for 7dtd', undefined, { allowReport: false });
-        return;
-      }
+          api.showErrorNotification('No active profile for 7dtd', undefined, { allowReport: false });
+          return;
+        }
 
-      api.store.dispatch(setPrefixOffset(profileId, offset));
-      const loadOrder = util.getSafe(api.getState(), ['persistent', 'loadOrder', profileId], []);
-      const newLO = loadOrder.map(entry => ({
-        ...entry,
-        data: {
-          prefix: makePrefix(reversePrefix(entry.data.prefix) + offset),
-        },
-      }));
-      api.store.dispatch(actions.setLoadOrder(profileId, newLO));
-    }
-    return Promise.resolve();
-  })
-  .catch(err => {
-    api.showErrorNotification('Failed to set prefix offset', err, { allowReport: false });
-    return Promise.resolve();
-  });
+        api.store.dispatch(setPrefixOffset(profileId, offset));
+        const loadOrder = util.getSafe(api.getState(), ['persistent', 'loadOrder', profileId], []);
+        const newLO = loadOrder.map(entry => ({
+          ...entry,
+          data: {
+            prefix: makePrefix(reversePrefix(entry.data.prefix) + offset),
+          },
+        }));
+        api.store.dispatch(actions.setLoadOrder(profileId, newLO));
+      }
+      return Promise.resolve();
+    })
+    .catch(err => {
+      api.showErrorNotification('Failed to set prefix offset', err, { allowReport: false });
+      return Promise.resolve();
+    });
 }
 
 async function findGame() {
@@ -93,7 +93,7 @@ async function findGame() {
 async function prepareForModding(context: types.IExtensionContext,
                                  discovery: types.IDiscoveryResult) {
   const isUDFSet = util.getSafe(context.api.getState(),
-    ['settings', '7daystodie', 'udf'], undefined) != null;
+                                ['settings', '7daystodie', 'udf'], undefined) != null;
   return (!isUDFSet) ? selectUDF(context) : Promise.resolve();
 }
 
@@ -226,7 +226,7 @@ function InfoPanelWrap(props: { api: types.IExtensionApi, profileId: string }) {
   const { api, profileId } = props;
   const currentOffset = useSelector((state: types.IState) =>
     makePrefix(util.getSafe(state,
-      ['settings', '7daystodie', 'prefixOffset', profileId], 0)));
+                            ['settings', '7daystodie', 'prefixOffset', profileId], 0)));
 
   return (
     <InfoPanel
@@ -289,21 +289,21 @@ function main(context: types.IExtensionContext) {
 
   context.registerAction('fb-load-order-icons', 150, 'loot-sort', {},
                          'Prefix Offset Assign', () => {
-    setPrefixOffsetDialog(context.api);
-  }, () => {
-    const state = context.api.getState();
-    const activeGame = selectors.activeGameId(state);
-    return activeGame === GAME_ID;
-  });
+                           setPrefixOffsetDialog(context.api);
+                         }, () => {
+                           const state = context.api.getState();
+                           const activeGame = selectors.activeGameId(state);
+                           return activeGame === GAME_ID;
+                         });
 
   context.registerAction('fb-load-order-icons', 150, 'loot-sort', {},
                          'Prefix Offset Reset', () => {
-    resetPrefixOffset(context.api);
-  }, () => {
-    const state = context.api.getState();
-    const activeGame = selectors.activeGameId(state);
-    return activeGame === GAME_ID;
-  });
+                           resetPrefixOffset(context.api);
+                         }, () => {
+                           const state = context.api.getState();
+                           const activeGame = selectors.activeGameId(state);
+                           return activeGame === GAME_ID;
+                         });
 
   const getOverhaulPath = (game: types.IGame) => {
     const state = context.api.getState();
@@ -312,17 +312,17 @@ function main(context: types.IExtensionContext) {
   };
 
   context.registerInstaller('7dtd-mod', 25,
-    toBlue(testSupportedContent), toBlue(installContent));
+                            toBlue(testSupportedContent), toBlue(installContent));
 
   context.registerInstaller('7dtd-root-mod', 20, toBlue(testRootMod), toBlue(installRootMod));
   context.registerModType('7dtd-root-mod', 20, (gameId) => gameId === GAME_ID,
-    getOverhaulPath, (instructions) => {
-      const candidateFound = hasCandidate(instructions
-        .filter(instr => !!instr.destination)
-        .map(instr => instr.destination));
-      return Promise.resolve(candidateFound) as any;
-    },
-      { name: 'Root Directory Mod', mergeMods: true, deploymentEssential: false });
+                          getOverhaulPath, (instructions) => {
+                            const candidateFound = hasCandidate(instructions
+                              .filter(instr => !!instr.destination)
+                              .map(instr => instr.destination));
+                            return Promise.resolve(candidateFound) as any;
+                          },
+                          { name: 'Root Directory Mod', mergeMods: true, deploymentEssential: false });
 
   context.registerMigration(toBlue(old => migrate020(context.api, old)));
   context.registerMigration(toBlue(old => migrate100(context, old)));

@@ -5,8 +5,8 @@ const MS_ID = 'Chucklefish.StarboundWindows10Edition';
 
 function findGame() {
   return util.steam.findByName('Starbound')
-      .catch(() => util.GameStoreHelper.findByAppId([MS_ID], 'xbox'))
-      .then(game => game.gamePath);
+    .catch(() => util.GameStoreHelper.findByAppId([MS_ID], 'xbox'))
+    .then(game => game.gamePath);
 }
 
 function gameExecutable(discoveryPath) {

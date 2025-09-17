@@ -14,8 +14,8 @@ const GOG_ID = '1958228073';
 const MOD_EXT = '.mod';
 
 const extension =  process.platform == 'linux'
-    ? '.bin.x86'
-    : '.exe';
+  ? '.bin.x86'
+  : '.exe';
 
 function modPath() {
   return path.join(appUni.getPath('documents'), 'My Games', 'runic games', 'torchlight 2', 'mods');
@@ -24,8 +24,8 @@ function modPath() {
 function findGame() {
   try {
     const instPath = winapi.RegGetValue('HKEY_LOCAL_MACHINE',
-      'SOFTWARE\\WOW6432Node\\runic games\\torchlight ii',
-      'instdir');
+                                        'SOFTWARE\\WOW6432Node\\runic games\\torchlight ii',
+                                        'instdir');
     if (!instPath) {
       throw new Error('empty registry key');
     }
@@ -38,7 +38,7 @@ function findGame() {
 
 function prepareForModding(discovery) {
   return fs.ensureDirWritableAsync(modPath(),
-    () => Promise.resolve());
+                                   () => Promise.resolve());
 }
 
 function installContent(files,

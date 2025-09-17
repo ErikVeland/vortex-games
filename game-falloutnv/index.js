@@ -134,9 +134,9 @@ function prepareForModding(api, discovery) {
                 'If you would prefer to manage a different language you can change the path to the game using the "Manually Set Location" option in the games tab.',
               parameters: { gameName, storeName, selectedLanguage }
             }, 
-            [ 
-              { label: 'Close', action: () => api.suppressNotification(`${GAME_ID}-locale-message`) }
-            ]
+                           [ 
+                             { label: 'Close', action: () => api.suppressNotification(`${GAME_ID}-locale-message`) }
+                           ]
             );
           }
         }

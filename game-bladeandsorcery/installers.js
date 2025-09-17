@@ -115,10 +115,10 @@ async function installOfficialMod(files,
 }
 
 async function installMulleMod(files,
-                        destinationPath,
-                        gameId,
-                        progressDelegate,
-                        api) {
+                               destinationPath,
+                               gameId,
+                               progressDelegate,
+                               api) {
   // MulleDK19's mod loader is no longer being updated and will not function
   //  with B&S version 6.0 and higher. We're going to keep this modType installer
   //  for the sake of stopping users from installing out of date mods.

@@ -25,7 +25,7 @@ async function migrate103(api, oldVersion) {
     const modPath = path.join(installPath, mod.installationPath);
     const plugins = [];
     await walk(modPath, entries => {
-      for (let entry of entries) {
+      for (const entry of entries) {
         if (['.esp', '.esm'].includes(path.extname(entry.filePath.toLowerCase()))) {
           plugins.push(path.basename(entry.filePath));
         }

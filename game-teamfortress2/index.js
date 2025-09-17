@@ -13,7 +13,7 @@ function findGame() {
     .then(game => game.gamePath);
 }
 
-let tools = [
+const tools = [
   {
     id: 'hammer',
     name: 'Hammer',
@@ -51,7 +51,7 @@ function testSupportedContent(files, gameId) {
     (files.find(file => path.extname(file).toLowerCase() === MOD_FILE_EXT) !== undefined);
 
   if (supported && files.find(file =>
-      (path.basename(file).toLowerCase() === 'moduleconfig.xml')
+    (path.basename(file).toLowerCase() === 'moduleconfig.xml')
       && (path.basename(path.dirname(file)).toLowerCase() === 'fomod'))) {
     supported = false;
   }

@@ -117,10 +117,10 @@ function prepareForModding(discovery, context) {
                 modPaths: candidates.map(cand => `"${path.join(path.dirname(modPathEE()), cand)}"`).join('\n'),
               }
             },
-            [
-              { label: 'Go to Documents Folder', action: () => util.opn(path.dirname(modPathEE())).catch(() => null) },
-              { label: 'Close' }
-            ])
+                                   [
+                                     { label: 'Go to Documents Folder', action: () => util.opn(path.dirname(modPathEE())).catch(() => null) },
+                                     { label: 'Close' }
+                                   ])
           }
         }
       ],
@@ -132,14 +132,14 @@ function prepareForModding(discovery, context) {
   const testModsPath = () => (context === undefined)
     ? Promise.resolve()
     : fs.readdirAsync(path.dirname(modPathEE())).then(entries => {
-        const candidates = entries.filter(entry => rgx.test(entry));
-        return (candidates.length > 1)
-          ? raiseNotif(candidates)
-          : Promise.resolve();
-      });
+      const candidates = entries.filter(entry => rgx.test(entry));
+      return (candidates.length > 1)
+        ? raiseNotif(candidates)
+        : Promise.resolve();
+    });
 
   return Promise.map(Object.keys(MOD_EXT_DESTINATION),
-    ext => fs.ensureDirAsync(path.join(context === undefined ? discovery.path : modPathEE(), MOD_EXT_DESTINATION[ext])))
+                     ext => fs.ensureDirAsync(path.join(context === undefined ? discovery.path : modPathEE(), MOD_EXT_DESTINATION[ext])))
     .then(() => testModsPath());
 }
 

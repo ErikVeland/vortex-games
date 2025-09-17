@@ -46,11 +46,11 @@ function walkAsync(dir) {
       });
     });
   })
-  .then(() => Promise.resolve(entries))
-  .catch(err => {
-    log('error', 'Unable to read mod directory', err);
-    return Promise.resolve(entries);
-  });
+    .then(() => Promise.resolve(entries))
+    .catch(err => {
+      log('error', 'Unable to read mod directory', err);
+      return Promise.resolve(entries);
+    });
 }
 
 function migrate101(api, oldVersion) {
@@ -151,27 +151,27 @@ function migrate101(api, oldVersion) {
             }
             return accum;
           }, {})).then(filtered => Promise.each(filtered.files, file => {
-            const relPath = path.relative(modPath, file);
-            const newFilePath = path.join(modPath, 'rom', relPath);
+          const relPath = path.relative(modPath, file);
+          const newFilePath = path.join(modPath, 'rom', relPath);
 
-            return fs.moveAsync(file, newFilePath);
-          }).then(() => {
-            if (filtered.dirs !== undefined) {
-              const sorted = filtered.dirs.sort((a, b) => b.length - a.length);
-              return Promise.each(sorted, dir => fs.removeAsync(dir));
-            }
-          })).catch(err => {
-            log('error', 'migration failed', err);
-            migrationSuccess = false
-            return Promise.resolve();
-          })
+          return fs.moveAsync(file, newFilePath);
+        }).then(() => {
+          if (filtered.dirs !== undefined) {
+            const sorted = filtered.dirs.sort((a, b) => b.length - a.length);
+            return Promise.each(sorted, dir => fs.removeAsync(dir));
+          }
+        })).catch(err => {
+          log('error', 'migration failed', err);
+          migrationSuccess = false
+          return Promise.resolve();
+        })
         : Promise.resolve(); // Not a rom dir ? nothing to do here.
     });
   })
-  .then(() => {
-    raiseDDDANotif(migrationSuccess);
-    Promise.resolve();
-  });
+    .then(() => {
+      raiseDDDANotif(migrationSuccess);
+      Promise.resolve();
+    });
 }
 
 // merging archives is considerably slower than replacing them, if we did it for all arc files,
@@ -253,11 +253,11 @@ function testIsInvalidMod(files, gameId) {
   return (gameId !== GAME_ID)
     ? Promise.resolve({ supported: false })
     : Promise.resolve({ supported: (files.filter(file => {
-        const segments = file.split(path.sep).filter(seg => !!seg);
-        return segments.find(seg => ['movie', 'rom', 'sa', 'sound', 'system', 'tgs',
-          'usershader', 'usertexture'].includes(seg)) !== undefined;
+      const segments = file.split(path.sep).filter(seg => !!seg);
+      return segments.find(seg => ['movie', 'rom', 'sa', 'sound', 'system', 'tgs',
+        'usershader', 'usertexture'].includes(seg)) !== undefined;
     }).length === 0)
-  });
+    });
 }
 
 module.exports = {

@@ -8,7 +8,7 @@ const AHATINTIME_ID = 'ahatintime';
 //  root folder.
 const MOD_INFO = 'modinfo.ini';
 
-let tools = [
+const tools = [
   {
     id: 'HatinTimeEditor',
     name: 'Modding Tools',
@@ -22,12 +22,12 @@ let tools = [
 
 function findGame() {
   return util.steam.findByAppId('253230')
-      .then(game => game.gamePath);
+    .then(game => game.gamePath);
 }
 
 function prepareForModding(discovery) {
   return fs.ensureDirWritableAsync(path.join(discovery.path, 'HatInTimeGame/Mods'),
-    () => Promise.resolve());
+                                   () => Promise.resolve());
 }
 
 function installContent(files,

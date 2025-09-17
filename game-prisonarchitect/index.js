@@ -5,13 +5,13 @@ const { fs, util } = require('vortex-api');
 const { app, remote } = require('electron');
 
 const executable =  process.platform == 'linux'
-    ? 'PrisonArchitect'
-    : 'Prison Architect64.exe';
+  ? 'PrisonArchitect'
+  : 'Prison Architect64.exe';
 
 const appUni = remote !== undefined ? remote.app : app;
 
 const MODS_LOCAL = path.resolve(appUni.getPath('appData'),
-  '..', 'Local', 'Introversion', 'Prison Architect', 'mods');
+                                '..', 'Local', 'Introversion', 'Prison Architect', 'mods');
 
 const GAME_ID = 'prisonarchitect';
 const STEAM_ID = 233450;
@@ -82,5 +82,5 @@ function main(context) {
 }
 
 module.exports = {
-    default: main
+  default: main
 };

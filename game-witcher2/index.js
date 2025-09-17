@@ -32,7 +32,7 @@ function prepareForModding(discovery) {
 }
 
 function main(context) {
-  var win32 = process.platform === 'win32';
+  const win32 = process.platform === 'win32';
   context.registerGame({
     id: 'witcher2',
     name: 'The Witcher 2',

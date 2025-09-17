@@ -17,12 +17,12 @@ const MOD_FILE_EXT = ".pak";
 
 function findGame() {
   return util.steam.findByAppId('678960')
-      .then(game => game.gamePath);
+    .then(game => game.gamePath);
 }
 
 function prepareForModding(discovery) {
   return fs.ensureDirWritableAsync(path.join(discovery.path, 'codevein', 'content', 'paks', '~mods'),
-    () => Promise.resolve());
+                                   () => Promise.resolve());
 }
 
 function installContent(files) {
@@ -53,7 +53,7 @@ function testSupportedContent(files, gameId) {
     (files.find(file => path.extname(file).toLowerCase() === MOD_FILE_EXT) !== undefined);
 
   if (supported && files.find(file =>
-      (path.basename(file).toLowerCase() === 'moduleconfig.xml')
+    (path.basename(file).toLowerCase() === 'moduleconfig.xml')
       && (path.basename(path.dirname(file)).toLowerCase() === 'fomod'))) {
     supported = false;
   }
@@ -165,69 +165,69 @@ function LoadOrderBase(props) {
       return !modIsEnabled(props, item)
         ? null
         : React.createElement(BS.ListGroupItem, {
-            style: {
-              backgroundColor: 'var(--brand-bg, black)',
-              borderBottom: '2px solid var(--border-color, white)'
-            },
-          }, 
-          React.createElement('div', {
-            style: {
-              fontSize: '1.1em',
-            },
+          style: {
+            backgroundColor: 'var(--brand-bg, black)',
+            borderBottom: '2px solid var(--border-color, white)'
           },
-          React.createElement('img', {
-            src: props.mods[item].attributes.pictureUrl || `${__dirname}/gameart.jpg`,
-            className: 'mod-picture',
-            width:'75px',
-            height:'45px',
-            style: {
-              margin: '5px 10px 5px 5px',
-              border: '1px solid var(--brand-secondary,#D78F46)',
-            },
-          }),
-          util.renderModName(props.mods[item])));
+        }, 
+                              React.createElement('div', {
+                                style: {
+                                  fontSize: '1.1em',
+                                },
+                              },
+                                                  React.createElement('img', {
+                                                    src: props.mods[item].attributes.pictureUrl || `${__dirname}/gameart.jpg`,
+                                                    className: 'mod-picture',
+                                                    width:'75px',
+                                                    height:'45px',
+                                                    style: {
+                                                      margin: '5px 10px 5px 5px',
+                                                      border: '1px solid var(--brand-secondary,#D78F46)',
+                                                    },
+                                                  }),
+                                                  util.renderModName(props.mods[item])));
     }
   }
 
   return React.createElement(MainPage, {},
-    React.createElement(MainPage.Body, {},
-      React.createElement(BS.Panel, { id: 'codevein-loadorder-panel' },
-        React.createElement(BS.Panel.Body, {},
-          React.createElement(FlexLayout, { type: 'row' }, 
-            React.createElement(FlexLayout.Flex, {}, 
-              React.createElement(DraggableList, {
-                id: 'codevein-loadorder',
-                itemTypeId: 'codevein-loadorder-item',
-                items: sorted,
-                itemRenderer: ItemRenderer,
-                style: {
-                  height: '100%',
-                  overflow: 'auto',
-                  borderWidth: 'var(--border-width, 1px)',
-                  borderStyle: 'solid',
-                  borderColor: 'var(--border-color, white)',
-                },
-                apply: ordered => {
-                  props.onSedDeploymentNecessary(props.profile.gameId, true);
-                  return props.onSetOrder(props.profile.id, ordered)
-                },
-              })
-            ),
-            React.createElement(FlexLayout.Flex, {},
-              React.createElement('div', {
-                style: {
-                  padding: 'var(--half-gutter, 15px)',
-                }
-              },
-                React.createElement('h2', {}, 
-                  props.t('Changing your load order', { ns: I18N_NAMESPACE })),
-                React.createElement('p', {}, 
-                  props.t('Drag and drop the mods on the left to reorder them. Code Vein loads mods in alphabetic order so Vortex prefixes '
+                             React.createElement(MainPage.Body, {},
+                                                 React.createElement(BS.Panel, { id: 'codevein-loadorder-panel' },
+                                                                     React.createElement(BS.Panel.Body, {},
+                                                                                         React.createElement(FlexLayout, { type: 'row' }, 
+                                                                                                             React.createElement(FlexLayout.Flex, {}, 
+                                                                                                                                 React.createElement(DraggableList, {
+                                                                                                                                   id: 'codevein-loadorder',
+                                                                                                                                   itemTypeId: 'codevein-loadorder-item',
+                                                                                                                                   items: sorted,
+                                                                                                                                   itemRenderer: ItemRenderer,
+                                                                                                                                   style: {
+                                                                                                                                     height: '100%',
+                                                                                                                                     overflow: 'auto',
+                                                                                                                                     borderWidth: 'var(--border-width, 1px)',
+                                                                                                                                     borderStyle: 'solid',
+                                                                                                                                     borderColor: 'var(--border-color, white)',
+                                                                                                                                   },
+                                                                                                                                   apply: ordered => {
+                                                                                                                                     props.onSedDeploymentNecessary(props.profile.gameId, true);
+                                                                                                                                     return props.onSetOrder(props.profile.id, ordered)
+                                                                                                                                   },
+                                                                                                                                 })
+                                                                                                             ),
+                                                                                                             React.createElement(FlexLayout.Flex, {},
+                                                                                                                                 React.createElement('div', {
+                                                                                                                                   style: {
+                                                                                                                                     padding: 'var(--half-gutter, 15px)',
+                                                                                                                                   }
+                                                                                                                                 },
+                                                                                                                                                     React.createElement('h2', {}, 
+                                                                                                                                                                         props.t('Changing your load order', { ns: I18N_NAMESPACE })),
+                                                                                                                                                     React.createElement('p', {}, 
+                                                                                                                                                                         props.t('Drag and drop the mods on the left to reorder them. Code Vein loads mods in alphabetic order so Vortex prefixes '
                   + 'the directory names with "AAA, AAB, AAC, ..." to ensure they load in the order you set here. ', { ns: I18N_NAMESPACE })),
-                  React.createElement('p', {}, 
-                  props.t('Note: You can only manage mods installed with Vortex. Installing other mods manually may cause unexpected errors.', { ns: I18N_NAMESPACE })),
-              ))
-        )))));
+                                                                                                                                                     React.createElement('p', {}, 
+                                                                                                                                                                         props.t('Note: You can only manage mods installed with Vortex. Installing other mods manually may cause unexpected errors.', { ns: I18N_NAMESPACE })),
+                                                                                                                                 ))
+                                                                                         )))));
 }
 
 function mapStateToProps(state) {

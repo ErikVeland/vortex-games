@@ -58,7 +58,7 @@ async function getModName(manifestFilePath, element, ext) {
   //  modify the name of the mod in the manifest file, creating a mismatch between
   //  asset paths and the manifest.
   const folderName = path.basename(path.dirname(manifestFilePath));
-  let modName = (path.extname(folderName) === '.installing')
+  const modName = (path.extname(folderName) === '.installing')
     // The mod's files are distributed looseley - no folder - read manifest.
     ? await getJSONElement(manifestFilePath, element)
     // The mod author included a mod folder - use that as the mod name.
@@ -127,7 +127,7 @@ async function getGameVersion(discoveryPath, execFile) {
   const gameVer = getFileVersion(path.join(discoveryPath, execFile));
   if (gameVer.match(/^20[0-9][0-9]/)) {
     const configFile = await findGameConfig(discoveryPath);
-    let gameVersion = await getJSONElement(configFile, 'gameVersion');
+    const gameVersion = await getJSONElement(configFile, 'gameVersion');
     return gameVersion.toString().replace(',', '.');
   } else {
     return gameVer;

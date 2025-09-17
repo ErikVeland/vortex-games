@@ -9,12 +9,12 @@ const MOD_FILE_EXT = ".pak";
 
 function findGame() {
   return util.steam.findByAppId('411300')
-      .then(game => game.gamePath);
+    .then(game => game.gamePath);
 }
 
 function prepareForModding(discovery) {
   return fs.ensureDirWritableAsync(path.join(discovery.path, 'data', 'packed'),
-    () => Promise.resolve());
+                                   () => Promise.resolve());
 }
 
 function installContent(files) {
@@ -45,7 +45,7 @@ function testSupportedContent(files, gameId) {
     (files.find(file => path.extname(file).toLowerCase() === MOD_FILE_EXT) !== undefined);
 
   if (supported && files.find(file =>
-      (path.basename(file).toLowerCase() === 'moduleconfig.xml')
+    (path.basename(file).toLowerCase() === 'moduleconfig.xml')
       && (path.basename(path.dirname(file)).toLowerCase() === 'fomod'))) {
     supported = false;
   }

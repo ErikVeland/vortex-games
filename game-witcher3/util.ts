@@ -267,15 +267,55 @@ export function isLockedEntry(modName: string) {
 }
 
 export function determineExecutable(discoveredPath: string): string {
+  // Enhanced platform-aware logic while maintaining synchronous API
   if (discoveredPath !== undefined) {
+    // On macOS, check for native app bundle first
+    if (process.platform === 'darwin') {
+      try {
+        const macExecutable = path.join(discoveredPath, 'Contents', 'MacOS', 'witcher3');
+        fs.statSync(macExecutable);
+        return 'Contents/MacOS/witcher3';
+      } catch (err) {
+        // Continue to Windows executable checks
+      }
+    }
+    
+    // Check for DX12 version (preferred on Windows)
     try {
       fs.statSync(path.join(discoveredPath, 'bin', 'x64_DX12', 'witcher3.exe'));
       return 'bin/x64_DX12/witcher3.exe';
     } catch (err) {
       // nop, use fallback
     }
+    
+    // Check for standard version
+    try {
+      fs.statSync(path.join(discoveredPath, 'bin', 'x64', 'witcher3.exe'));
+      return 'bin/x64/witcher3.exe';
+    } catch (err) {
+      // nop, use fallback
+    }
+    
+    // On Linux, check for native executable
+    if (process.platform === 'linux') {
+      try {
+        const linuxExecutable = path.join(discoveredPath, 'bin', 'witcher3');
+        fs.statSync(linuxExecutable);
+        return 'bin/witcher3';
+      } catch (err) {
+        // Continue to fallback
+      }
+    }
   }
-  return 'bin/x64/witcher3.exe';
+  
+  // Final fallback based on platform
+  if (process.platform === 'darwin') {
+    return 'Contents/MacOS/witcher3';  // Assume app bundle structure
+  } else if (process.platform === 'linux') {
+    return 'bin/witcher3';
+  }
+  
+  return 'bin/x64/witcher3.exe';  // Windows fallback
 }
 
 export function forceRefresh(api: types.IExtensionApi) {

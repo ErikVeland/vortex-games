@@ -43,7 +43,7 @@ async function migrate0212(api, oldVersion) {
     return Promise.resolve();
   }
 
-  let batched = [actions.setDeploymentNecessary(GAME_ID, true)];
+  const batched = [actions.setDeploymentNecessary(GAME_ID, true)];
   await api.awaitUI();
   const baseFolder = path.join(discovery.path, streamingAssetsPath());
   await api.emitAndAwait('purge-mods-in-path', GAME_ID, 'bas-legacy-modtype', baseFolder);
@@ -67,10 +67,10 @@ function migrate020(api, oldVersion) {
   }
 
   const activatorId = util.getSafe(state,
-    ['settings', 'mods', 'activator', GAME_ID], undefined);
+                                   ['settings', 'mods', 'activator', GAME_ID], undefined);
 
   const gameDiscovery = util.getSafe(state,
-    ['settings', 'gameMode', 'discovered', GAME_ID], undefined);
+                                     ['settings', 'gameMode', 'discovered', GAME_ID], undefined);
 
   if ((gameDiscovery?.path === undefined)
       || (activatorId === undefined)) {
@@ -80,7 +80,7 @@ function migrate020(api, oldVersion) {
   }
 
   // Holds mod ids of mods we failed to migrate.
-  let failedToMigrate = [];
+  const failedToMigrate = [];
   return api.awaitUI()
     .then(() => {
       const baseFolder = path.join(gameDiscovery.path, streamingAssetsPath());
@@ -124,7 +124,7 @@ function migrate020(api, oldVersion) {
                                   + 'These will have to be re-installed manually in order to '
                                   + 'function properly. The mods that require re-installation are:\n\n'
                                   + '{{modIds}}',
-                                  { replace: { modIds: failedToMigrate.join('\n') } })
+                                    { replace: { modIds: failedToMigrate.join('\n') } })
               }, [ { label: 'Close', action: () => dismiss() } ])
             },
           ],
@@ -160,19 +160,19 @@ function migrateMod020(api, mod) {
       .then(modName => {
         const newPath = path.join(modPath, modName);
         const directories = allEntries.filter(entry => path.extname(path.basename(entry)) === '')
-                                      .map(entry => ({
-                                        src: entry,
-                                        dest: entry.replace(modPath, newPath)
-                                      }))
-                                      .sort((a, b) => a.src.length - b.src.length);
+          .map(entry => ({
+            src: entry,
+            dest: entry.replace(modPath, newPath)
+          }))
+          .sort((a, b) => a.src.length - b.src.length);
 
         const files = allEntries.filter(entry => path.extname(path.basename(entry)) !== '')
-                                .map(entry => ({
-                                  src: entry,
-                                  dest: entry.replace(modPath, newPath),
-                                }));
-        let newDirs = [];
-        let newFiles = [];
+          .map(entry => ({
+            src: entry,
+            dest: entry.replace(modPath, newPath),
+          }));
+        const newDirs = [];
+        const newFiles = [];
         return Promise.each(directories, dir => fs.ensureDirWritableAsync(dir.dest).tap(() => newDirs.push(dir.dest)))
           .then(() => Promise.each(files, file => fs.linkAsync(file.src, file.dest).tap(() => newFiles.push(file.dest))))
           .catch(err => {
@@ -180,7 +180,7 @@ function migrateMod020(api, mod) {
             const dirs = newDirs.sort((a, b) => b.length - a.length);
             return Promise.each([...newFiles, ...dirs], entry =>
               fs.removeAsync(entry).catch(() => Promise.resolve()))
-            .then(() => Promise.reject(err))
+              .then(() => Promise.reject(err))
           })
           .then(() => Promise.each(files, file => fs.removeAsync(file.src)))
           .then(() => Promise.each(directories, dir => fs.removeAsync(dir.src)))

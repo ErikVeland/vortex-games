@@ -4,7 +4,7 @@ import { WithTranslation, withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 
 import { ComponentEx, EmptyPlaceholder, FlexLayout, Icon,
-  selectors, types, util } from 'vortex-api';
+         selectors, types, util } from 'vortex-api';
 
 import { IExtendedInterfaceProps, ILoadOrderEntry } from '../types/types';
 
@@ -61,7 +61,7 @@ class MorrowindCollectionsDataView extends ComponentEx<IProps, IComponentState> 
         <div style={{ overflow: 'auto' }}>
           <h4>{t('Load Order')}</h4>
           <p>
-          {t('This is a snapshot of the load order information that '
+            {t('This is a snapshot of the load order information that '
            + 'will be exported with this collection.')}
           </p>
           {this.renderLoadOrderEditInfo()}
@@ -69,7 +69,7 @@ class MorrowindCollectionsDataView extends ComponentEx<IProps, IComponentState> 
             {sortedMods.map((entry, idx) => this.renderModEntry(entry, idx))}
           </ListGroup>
         </div>
-    ) : this.renderPlaceholder();
+      ) : this.renderPlaceholder();
   }
 
   private updateSortedMods() {

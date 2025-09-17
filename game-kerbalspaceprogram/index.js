@@ -4,12 +4,12 @@ const path = require('path');
 const { fs, log, selectors, util } = require('vortex-api');
 
 const extension =  process.platform == 'linux'
-    ? '.x86_64'
-    : '_x64.exe';
+  ? '.x86_64'
+  : '_x64.exe';
 
 function findGame() {
   return util.steam.findByAppId('220200')
-      .then(game => game.gamePath);
+    .then(game => game.gamePath);
 }
 
 function main(context) {

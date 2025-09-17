@@ -11,7 +11,7 @@ const SOUND_CONFIG = `sound{
 
 function findGame() {
   return util.steam.findByName('War Thunder')
-      .then(game => game.gamePath);
+    .then(game => game.gamePath);
 }
 
 function modPath() {
@@ -68,7 +68,7 @@ function main(context) {
   };
 
   context.registerModType('warthunder-audio-modtype', 25,
-    gameId => gameId === 'warthunder', getSoundModPath, isAudioModType);
+                          gameId => gameId === 'warthunder', getSoundModPath, isAudioModType);
 
   return true;
 }

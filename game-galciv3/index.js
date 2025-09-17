@@ -106,7 +106,7 @@ function main(context) {
 
   context.registerInstaller('galciv3installer', 25, testSupportedContent, installContent);
   context.registerModType('galciv3crusade', 25, (gameId) => (gameId === GAME_ID),
-    () => crusadeModPath(), () => dirExists(crusadeModPath()));
+                          () => crusadeModPath(), () => dirExists(crusadeModPath()));
 
   context.once(() => {
     let displayNotification = false;

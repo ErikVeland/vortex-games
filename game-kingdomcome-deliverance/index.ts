@@ -31,20 +31,20 @@ function findGame() {
 
 async function requiresLauncher(gamePath, store) {
   if (store === 'xbox') {
-      return Promise.resolve({
-          launcher: 'xbox',
-          addInfo: {
-              appId: XBOX_APPID,
-              parameters: [{ appExecName: XBOXEXECNAME }],
-          },
-      });
-  }
- if (store === 'epic') {
     return Promise.resolve({
-        launcher: 'epic',
-        addInfo: {
-            appId: EPIC_APPID,
-        },
+      launcher: 'xbox',
+      addInfo: {
+        appId: XBOX_APPID,
+        parameters: [{ appExecName: XBOXEXECNAME }],
+      },
+    });
+  }
+  if (store === 'epic') {
+    return Promise.resolve({
+      launcher: 'epic',
+      addInfo: {
+        appId: EPIC_APPID,
+      },
     });
   }
   return Promise.resolve(undefined);
@@ -65,13 +65,13 @@ function getExecutable(discoveredPath) {
   };
   if (isCorrectExec(epicPath)) {
     return epicPath;
-  };
+  }
   if (isCorrectExec(xboxPath)) {
     return xboxPath;
-  };
+  }
   if (isCorrectExec(steamPath)) {
     return steamPath;
-  };
+  }
   return steamPath;
 }
 
@@ -83,7 +83,7 @@ function prepareForModding(context, discovery) {
     .then(() => getCurrentOrder(path.join(discovery.path, modsPath(), MODS_ORDER_FILENAME)))
     .catch(err => err.code === 'ENOENT' ? Promise.resolve([]) : Promise.reject(err))
     .then(data => setNewOrder({ context, profile },
-      Array.isArray(data) ? data : data.split('\n')));
+                              Array.isArray(data) ? data : data.split('\n')));
 }
 
 function getCurrentOrder(modOrderFilepath) {
@@ -109,11 +109,11 @@ function walkAsync(dir) {
       });
     });
   })
-  .then(() => Promise.resolve(entries))
-  .catch(err => {
-    log('error', 'Unable to read mod directory', err);
-    return Promise.resolve(entries);
-  });
+    .then(() => Promise.resolve(entries))
+    .catch(err => {
+      log('error', 'Unable to read mod directory', err);
+      return Promise.resolve(entries);
+    });
 }
 
 
@@ -138,7 +138,7 @@ function readModsFolder(modsFolder, api) {
     .catch(err => {
       const allowReport = ['ENOENT', 'EPERM', 'EACCESS'].indexOf(err.code) === -1;
       api.showErrorNotification('failed to read kingdom come mods directory',
-        err.message, { allowReport });
+                                err.message, { allowReport });
       return Promise.resolve([]);
     });
 }
@@ -146,7 +146,7 @@ function readModsFolder(modsFolder, api) {
 function listHasMod(modId, list) {
   return (!!list)
     ? list.map(mod =>
-        transformId(mod).toLowerCase()).includes(modId.toLowerCase())
+      transformId(mod).toLowerCase()).includes(modId.toLowerCase())
     : false;
 }
 
@@ -160,7 +160,7 @@ function getManuallyAddedMods(disabledMods, enabledMods, modOrderFilepath, api) 
         // 1. Confirmed to exist (deployed) inside the mods directory.
         // 2. Is not part of any of the mod lists which Vortex manages.
         const manuallyAdded = data.split('\n').filter(entry =>
-            !listHasMod(entry, enabledMods)
+          !listHasMod(entry, enabledMods)
           && !listHasMod(entry, disabledMods)
           && listHasMod(entry, deployedMods));
 
@@ -190,7 +190,7 @@ function refreshModList(context, discoveryPath) {
         : accum);
   }, []).then(managedMods => {
     return getManuallyAddedMods(disabled, enabled, path.join(discoveryPath, modsPath(),
-      MODS_ORDER_FILENAME), context.api)
+                                                             MODS_ORDER_FILENAME), context.api)
       .then(manuallyAdded => {
         _MODS_STATE.enabled = [].concat(managedMods
           .map(mod => transformId(mod)), manuallyAdded);
@@ -220,78 +220,78 @@ function LoadOrderBase(props) {
       const mod = getMod(item);
 
       return React.createElement(BS.ListGroupItem, {
-            style: {
-              backgroundColor: 'var(--brand-bg, black)',
-              borderBottom: '2px solid var(--border-color, white)'
-            },
-          },
-          React.createElement('div', {
-            style: {
-              fontSize: '1.1em',
-            },
-          },
-          React.createElement('img', {
-            src: !!mod.attributes.pictureUrl
-                  ? mod.attributes.pictureUrl
-                  : `${__dirname}/gameart.jpg`,
-            className: 'mod-picture',
-            width:'75px',
-            height:'45px',
-            style: {
-              margin: '5px 10px 5px 5px',
-              border: '1px solid var(--brand-secondary,#D78F46)',
-            },
-          }),
-          util.renderModName(mod)))
+        style: {
+          backgroundColor: 'var(--brand-bg, black)',
+          borderBottom: '2px solid var(--border-color, white)'
+        },
+      },
+                                 React.createElement('div', {
+                                   style: {
+                                     fontSize: '1.1em',
+                                   },
+                                 },
+                                                     React.createElement('img', {
+                                                       src: !!mod.attributes.pictureUrl
+                                                         ? mod.attributes.pictureUrl
+                                                         : `${__dirname}/gameart.jpg`,
+                                                       className: 'mod-picture',
+                                                       width:'75px',
+                                                       height:'45px',
+                                                       style: {
+                                                         margin: '5px 10px 5px 5px',
+                                                         border: '1px solid var(--brand-secondary,#D78F46)',
+                                                       },
+                                                     }),
+                                                     util.renderModName(mod)))
     }
   }
 
   return React.createElement(MainPage, {},
-    React.createElement(MainPage.Body, {},
-      React.createElement(BS.Panel, { id: 'kcd-loadorder-panel' },
-        React.createElement(BS.Panel.Body, {},
-          React.createElement(FlexLayout, { type: 'row' },
-            React.createElement(FlexLayout.Flex, {},
-              React.createElement(DraggableList, {
-                id: 'kcd-loadorder',
-                itemTypeId: 'kcd-loadorder-item',
-                items: _MODS_STATE.display,
-                itemRenderer: ItemRenderer as any,
-                style: {
-                  height: '100%',
-                  overflow: 'auto',
-                  borderWidth: 'var(--border-width, 1px)',
-                  borderStyle: 'solid',
-                  borderColor: 'var(--border-color, white)',
-                },
-                apply: ordered => {
+                             React.createElement(MainPage.Body, {},
+                                                 React.createElement(BS.Panel, { id: 'kcd-loadorder-panel' },
+                                                                     React.createElement(BS.Panel.Body, {},
+                                                                                         React.createElement(FlexLayout, { type: 'row' },
+                                                                                                             React.createElement(FlexLayout.Flex, {},
+                                                                                                                                 React.createElement(DraggableList, {
+                                                                                                                                   id: 'kcd-loadorder',
+                                                                                                                                   itemTypeId: 'kcd-loadorder-item',
+                                                                                                                                   items: _MODS_STATE.display,
+                                                                                                                                   itemRenderer: ItemRenderer as any,
+                                                                                                                                   style: {
+                                                                                                                                     height: '100%',
+                                                                                                                                     overflow: 'auto',
+                                                                                                                                     borderWidth: 'var(--border-width, 1px)',
+                                                                                                                                     borderStyle: 'solid',
+                                                                                                                                     borderColor: 'var(--border-color, white)',
+                                                                                                                                   },
+                                                                                                                                   apply: ordered => {
                   // We only write to the mod_order file when we deploy to avoid (unlikely) situations
                   //  where a file descriptor remains open, blocking file operations when the user
                   //  changes the load order very quickly. This is all theoretical at this point.
-                  props.onSetDeploymentNecessary(GAME_ID, true);
-                  return setNewOrder(props, ordered);
-                },
-              })
-            ),
-            React.createElement(FlexLayout.Flex, {},
-              React.createElement('div', {
-                style: {
-                  padding: 'var(--half-gutter, 15px)',
-                }
-              },
-                React.createElement('h2', {},
-                  props.t('Changing your load order', { ns: I18N_NAMESPACE })),
-                React.createElement('p', {},
-                  props.t('Drag and drop the mods on the left to reorder them. Kingdom Come: Deliverance uses a mod_order.txt file '
+                                                                                                                                     props.onSetDeploymentNecessary(GAME_ID, true);
+                                                                                                                                     return setNewOrder(props, ordered);
+                                                                                                                                   },
+                                                                                                                                 })
+                                                                                                             ),
+                                                                                                             React.createElement(FlexLayout.Flex, {},
+                                                                                                                                 React.createElement('div', {
+                                                                                                                                   style: {
+                                                                                                                                     padding: 'var(--half-gutter, 15px)',
+                                                                                                                                   }
+                                                                                                                                 },
+                                                                                                                                                     React.createElement('h2', {},
+                                                                                                                                                                         props.t('Changing your load order', { ns: I18N_NAMESPACE })),
+                                                                                                                                                     React.createElement('p', {},
+                                                                                                                                                                         props.t('Drag and drop the mods on the left to reorder them. Kingdom Come: Deliverance uses a mod_order.txt file '
                       + 'to define the order in which mods are loaded, Vortex will write the folder names of the displayed '
                       + 'mods in the order you have set. '
                       + 'Mods placed at the bottom of the load order will have priority over those above them.', { ns: I18N_NAMESPACE })),
-                  React.createElement('p', {},
-                  props.t('Note: Vortex will detect manually added mods as long as these have been added to the mod_order.txt file. '
+                                                                                                                                                     React.createElement('p', {},
+                                                                                                                                                                         props.t('Note: Vortex will detect manually added mods as long as these have been added to the mod_order.txt file. '
                         + 'Manually added mods are not managed by Vortex - to remove these, you will have to '
                         + 'manually erase the entry from the mod_order.txt file.', { ns: I18N_NAMESPACE })),
-              ))
-        )))));
+                                                                                                                                 ))
+                                                                                         )))));
 }
 
 function modsPath() {
@@ -469,7 +469,7 @@ function main(context: types.IExtensionContext) {
           }
 
           // Sort
-          let sorted = transformed.length > 1
+          const sorted = transformed.length > 1
             ? transformed.sort((lhs, rhs) => loValue(lhs) - loValue(rhs))
             : transformed;
 

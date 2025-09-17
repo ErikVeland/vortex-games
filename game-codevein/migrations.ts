@@ -15,7 +15,7 @@ export async function migrate100(context, oldVersion) {
   const activatorId = selectors.activatorForGame(state, GAME_ID);
   const activator = util.getActivator(activatorId);
   const discoveryPath = util.getSafe(state,
-    ['settings', 'gameMode', 'discovered', GAME_ID, 'path'], undefined);
+                                     ['settings', 'gameMode', 'discovered', GAME_ID, 'path'], undefined);
 
   if (discoveryPath === undefined || activator === undefined) {
     // Game was not discovered or a deployment method isn't set.
@@ -23,7 +23,7 @@ export async function migrate100(context, oldVersion) {
   }
 
   const mods: { [modId: string]: types.IMod } = util.getSafe(state,
-    ['persistent', 'mods', GAME_ID], {});
+                                                             ['persistent', 'mods', GAME_ID], {});
   if (Object.keys(mods).length === 0) {
     return Promise.resolve();
   }

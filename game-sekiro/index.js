@@ -16,18 +16,18 @@ function prepareForModding(api, discovery) {
   const modEngineDInput = path.join(discovery.path, DINPUT);
   const showModEngineDialog = () => new Promise((resolve, reject) => {
     api.store.dispatch(actions.showDialog('question', 'Action required',
-      {
-        message: 'Sekiro requires "Sekiro Mod Engine" for mods to install and function correctly.\n' 
+                                          {
+                                            message: 'Sekiro requires "Sekiro Mod Engine" for mods to install and function correctly.\n' 
                + 'Vortex is able to install Mod Engine automatically (as a mod) but please ensure it is enabled\n'
                + 'and deployed at all times.'
-      },
-      [
-        { label: 'Continue', action: () => resolve() },
-        { label: 'Go to Mod Engine Page', action: () => {
-            util.opn('https://www.nexusmods.com/sekiro/mods/6').catch(err => undefined);
-            resolve();
-        }},
-      ]));
+                                          },
+                                          [
+                                            { label: 'Continue', action: () => resolve() },
+                                            { label: 'Go to Mod Engine Page', action: () => {
+                                              util.opn('https://www.nexusmods.com/sekiro/mods/6').catch(err => undefined);
+                                              resolve();
+                                            }},
+                                          ]));
   });
 
   // Check whether mod engine is installed.

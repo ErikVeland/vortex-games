@@ -5,7 +5,7 @@ const { fs, log, util } = require('vortex-api');
 
 function findGame() {
   return util.steam.findByName('X Rebirth')
-      .then(game => game.gamePath);
+    .then(game => game.gamePath);
 }
 
 function testSupported(files, gameId) {
@@ -31,67 +31,67 @@ function install(files,
 
   return fs.readFileAsync(path.join(destinationPath, contentPath),
                           { encoding: 'utf8' })
-      .then(async data => {
-        let parsed;
+    .then(async data => {
+      let parsed;
+      try {
+        parsed = await parseStringPromise(data);
+      } catch (err) { 
+        return Promise.reject(new util.DataInvalid('content.xml invalid: ' + err.message));
+      }
+      const attrInstructions = [];
+
+      const getAttr = key => {
         try {
-          parsed = await parseStringPromise(data);
-        } catch (err) { 
-          return Promise.reject(new util.DataInvalid('content.xml invalid: ' + err.message));
+          return parsed?.content?.$?.[key];
+        } catch (err) {
+          log('info', 'attribute missing in content.xml',  { key });
         }
-        const attrInstructions = [];
+      }
 
-        const getAttr = key => {
-          try {
-            return parsed?.content?.$?.[key];
-          } catch (err) {
-            log('info', 'attribute missing in content.xml',  { key });
-          }
-        }
-
-        outputPath = getAttr('id');
-        if (outputPath === undefined) {
-          return Promise.reject(
-              new util.DataInvalid('invalid or unsupported content.xml'));
-        }
-        attrInstructions.push({
-          type: 'attribute',
-          key: 'customFileName',
-          value: getAttr('name').trim(),
-        });
-        attrInstructions.push({
-          type: 'attribute',
-          key: 'description',
-          value: getAttr('description'),
-        });
-        attrInstructions.push({
-          type: 'attribute',
-          key: 'sticky',
-          value: getAttr('save') === 'true',
-        });
-        attrInstructions.push({
-          trype: 'attribute',
-          key: 'author',
-          value: getAttr('author'),
-        });
-        attrInstructions.push({
-          type: 'attribute',
-          key: 'version',
-          value: getAttr('version'),
-        });
-        return Promise.resolve(attrInstructions);
-      })
-      .then(attrInstructions => {
-        let instructions = attrInstructions.concat(
-            files.filter(file => file.startsWith(basePath + path.sep) &&
-                                 !file.endsWith(path.sep))
-                .map(file => ({
-                       type: 'copy',
-                       source: file,
-                       destination: path.join(
-                           outputPath, file.substring(basePath.length + 1))
-                     })));
-        return { instructions };
+      outputPath = getAttr('id');
+      if (outputPath === undefined) {
+        return Promise.reject(
+          new util.DataInvalid('invalid or unsupported content.xml'));
+      }
+      attrInstructions.push({
+        type: 'attribute',
+        key: 'customFileName',
+        value: getAttr('name').trim(),
       });
+      attrInstructions.push({
+        type: 'attribute',
+        key: 'description',
+        value: getAttr('description'),
+      });
+      attrInstructions.push({
+        type: 'attribute',
+        key: 'sticky',
+        value: getAttr('save') === 'true',
+      });
+      attrInstructions.push({
+        trype: 'attribute',
+        key: 'author',
+        value: getAttr('author'),
+      });
+      attrInstructions.push({
+        type: 'attribute',
+        key: 'version',
+        value: getAttr('version'),
+      });
+      return Promise.resolve(attrInstructions);
+    })
+    .then(attrInstructions => {
+      const instructions = attrInstructions.concat(
+        files.filter(file => file.startsWith(basePath + path.sep) &&
+                                 !file.endsWith(path.sep))
+          .map(file => ({
+            type: 'copy',
+            source: file,
+            destination: path.join(
+              outputPath, file.substring(basePath.length + 1))
+          })));
+      return { instructions };
+    });
 }
 
 function main(context) {

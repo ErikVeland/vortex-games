@@ -126,7 +126,7 @@ PackedFile ${MODS_SUB_PATH}/*/*/*/*/*/*.package`;
 function filterResourceCfg(filePath) {
   return fs.readFileAsync(filePath, { encoding: 'utf8' })
     .then(data => {
-      let res = [];
+      const res = [];
       let keep = true;
       let lastLineEmpty = false;
       data.split('\n')
@@ -219,7 +219,7 @@ function testMixed(files, gameId) {
     file => {
       const ext = path.extname(file);
       return TRAY_EXTENSIONS.has(ext.toLowerCase());
-     });
+    });
 
   return Promise.resolve({
     supported: trayFile !== undefined,
@@ -250,12 +250,12 @@ function installMixed(files, destinationPath) {
 
   // find out which path(s) contain files for tray
   const traySamples = files.filter(filePath => TRAY_EXTENSIONS.has(ext(filePath)));
-  let trayBases = new Set(traySamples
+  const trayBases = new Set(traySamples
     .map(filePath => path.dirname(filePath).toLowerCase()));
 
   // find out which path(s) contain files for mods
   const modsSamples = files.filter(filePath => MODS_EXTENSIONS.has(ext(filePath)));
-  let modsBases = new Set(modsSamples
+  const modsBases = new Set(modsSamples
     .map(filePath => path.dirname(filePath).toLowerCase()));
 
   // the following tries to account for overlap where the same directory contains files

@@ -41,7 +41,7 @@ export class ResourceInaccessibleError extends Error {
     return (this.isOneDrive)
       ? this.message + ': ' + 'probably by the OneDrive service.'
       : this.message + ': ' + 'close all applications that may be using this file.';
-    }
+  }
 }
 
 export class MergeDataViolationError extends Error {

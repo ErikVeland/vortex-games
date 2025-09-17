@@ -20,7 +20,7 @@ function query(baseUrl: string, request: string): Promise<any> {
       if ((res.statusCode === 403) && (callsRemaining === 0)) {
         const resetDate = parseInt(util.getSafe(msgHeaders, ['x-ratelimit-reset'], '0'), 10);
         log('info', 'GitHub rate limit exceeded',
-          { reset_at: (new Date(resetDate)).toString() });
+            { reset_at: (new Date(resetDate)).toString() });
         return reject(new util.ProcessCanceled('GitHub rate limit exceeded'));
       }
 
@@ -65,9 +65,9 @@ async function downloadConsent(api: types.IExtensionApi): Promise<void> {
     { label: 'Cancel' },
     { label: 'Download' },
   ])
-  .then(result => (result.action === 'Cancel')
-    ? Promise.reject(new util.UserCanceled())
-    : Promise.resolve());
+    .then(result => (result.action === 'Cancel')
+      ? Promise.reject(new util.UserCanceled())
+      : Promise.resolve());
 }
 
 async function notifyUpdate(api: types.IExtensionApi, latest: string, current: string): Promise<void> {
@@ -87,25 +87,25 @@ async function notifyUpdate(api: types.IExtensionApi, latest: string, current: s
       },
       actions: [
         { title : 'More', action: (dismiss: () => void) => {
-            api.showDialog('info', '{{name}} Update', {
-              text: 'Vortex has detected a newer version of {{name}} ({{latest}}) available to download from {{website}}. You currently have version {{current}} installed.'
+          api.showDialog('info', '{{name}} Update', {
+            text: 'Vortex has detected a newer version of {{name}} ({{latest}}) available to download from {{website}}. You currently have version {{current}} installed.'
               + '\nVortex can download and attempt to install the new update for you.',
-              parameters: {
-                name: 'LSLib/Divine Tool',
-                website: LSLIB_URL,
-                latest,
-                current,
+            parameters: {
+              name: 'LSLib/Divine Tool',
+              website: LSLIB_URL,
+              latest,
+              current,
+            },
+          }, [
+            {
+              label: 'Download',
+              action: () => {
+                resolve();
+                dismiss();
               },
-            }, [
-                {
-                  label: 'Download',
-                  action: () => {
-                    resolve();
-                    dismiss();
-                  },
-                },
-              ]);
-          },
+            },
+          ]);
+        },
         },
         {
           title: 'Dismiss',
@@ -122,24 +122,24 @@ async function notifyUpdate(api: types.IExtensionApi, latest: string, current: s
 export async function getLatestReleases(currentVersion: string) {
   if (GITHUB_URL) {
     return query(GITHUB_URL, 'releases')
-    .then((releases) => {
-      if (!Array.isArray(releases)) {
-        return Promise.reject(new util.DataInvalid('expected array of github releases'));
-      }
-      const current = releases
-        .filter(rel => {
-          const tagName = util.getSafe(rel, ['tag_name'], undefined);
-          const isPreRelease = util.getSafe(rel, ['prerelease'], false);
-          const version = semver.valid(tagName);
+      .then((releases) => {
+        if (!Array.isArray(releases)) {
+          return Promise.reject(new util.DataInvalid('expected array of github releases'));
+        }
+        const current = releases
+          .filter(rel => {
+            const tagName = util.getSafe(rel, ['tag_name'], undefined);
+            const isPreRelease = util.getSafe(rel, ['prerelease'], false);
+            const version = semver.valid(tagName);
 
-          return (!isPreRelease
+            return (!isPreRelease
             && (version !== null)
             && ((currentVersion === undefined) || (semver.gte(version, currentVersion))));
-        })
-        .sort((lhs, rhs) => semver.compare(rhs.tag_name, lhs.tag_name));
+          })
+          .sort((lhs, rhs) => semver.compare(rhs.tag_name, lhs.tag_name));
 
-      return Promise.resolve(current);
-    });
+        return Promise.resolve(current);
+      });
   }
 }
 
@@ -157,29 +157,29 @@ async function startDownload(api: types.IExtensionApi, downloadLink: string) {
     name: 'LSLib/Divine Tool',
   };
   api.events.emit('start-download', [redirectionURL], dlInfo, undefined,
-    (error, id) => {
-      if (error !== null) {
-        if ((error.name === 'AlreadyDownloaded')
+                  (error, id) => {
+                    if (error !== null) {
+                      if ((error.name === 'AlreadyDownloaded')
             && (error.downloadId !== undefined)) {
-          id = error.downloadId;
-        } else {
-          api.showErrorNotification('Download failed',
-            error, { allowReport: false });
-          return Promise.resolve();
-        }
-      }
-      api.events.emit('start-install-download', id, true, (err, modId) => {
-        if (err !== null) {
-          api.showErrorNotification('Failed to install LSLib',
-            err, { allowReport: false });
-        }
+                        id = error.downloadId;
+                      } else {
+                        api.showErrorNotification('Download failed',
+                                                  error, { allowReport: false });
+                        return Promise.resolve();
+                      }
+                    }
+                    api.events.emit('start-install-download', id, true, (err, modId) => {
+                      if (err !== null) {
+                        api.showErrorNotification('Failed to install LSLib',
+                                                  err, { allowReport: false });
+                      }
 
-        const state = api.getState();
-        const profileId = selectors.lastActiveProfileForGame(state, GAME_ID);
-        api.store.dispatch(actions.setModEnabled(profileId, modId, true));
-        return Promise.resolve();
-      });
-    }, 'ask');
+                      const state = api.getState();
+                      const profileId = selectors.lastActiveProfileForGame(state, GAME_ID);
+                      api.store.dispatch(actions.setModEnabled(profileId, modId, true));
+                      return Promise.resolve();
+                    });
+                  }, 'ask');
 }
 
 async function resolveDownloadLink(currentReleases: any[]) {

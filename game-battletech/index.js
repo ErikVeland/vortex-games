@@ -10,7 +10,7 @@ const APPID = 637090;
 
 function findGame() {
   return util.steam.findByAppId(APPID.toString())
-      .then(game => game.gamePath);
+    .then(game => game.gamePath);
 }
 
 function prepareForModding(discovery) {

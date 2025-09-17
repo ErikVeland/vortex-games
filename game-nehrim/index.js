@@ -4,19 +4,19 @@ const STEAMAPPID = '1014940';
 const OBLIVION_STEAMID = '22330';
 
 function findGame() {
-    try {
-        return util.GameStoreHelper.findByAppId([STEAMAPPID])
-        .then(() => {
-            return util.GameStoreHelper.findByAppId([OBLIVION_STEAMID])
-            .then((oblivion) => oblivion.gamePath);
-        })
-    }
-    catch(err) {
-        throw new Error('Game not found')
-    }
+  try {
+    return util.GameStoreHelper.findByAppId([STEAMAPPID])
+      .then(() => {
+        return util.GameStoreHelper.findByAppId([OBLIVION_STEAMID])
+          .then((oblivion) => oblivion.gamePath);
+      })
+  }
+  catch(err) {
+    throw new Error('Game not found')
+  }
 }
 
-let tools = [
+const tools = [
   {
     id: 'nehrim-launcher',
     name: 'Nehrim Launcher',

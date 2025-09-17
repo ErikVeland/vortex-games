@@ -7,7 +7,7 @@ const TW3KINDOMS_ID = 'totalwarthreekingdoms';
 // All BSRotN mods will be .pak files
 const MOD_FILE_EXT = ".pack";
 
-let tools = [
+const tools = [
   {
     id: 'TW3KingdomsTweak',
     name: 'Tweak',
@@ -32,12 +32,12 @@ let tools = [
 
 function findGame() {
   return util.steam.findByAppId('779340')
-      .then(game => game.gamePath);
+    .then(game => game.gamePath);
 }
 
 function prepareForModding(discovery) {
   return fs.ensureDirWritableAsync(path.join(discovery.path, 'data'),
-    () => Promise.resolve());
+                                   () => Promise.resolve());
 }
 
 function installContent(files) {

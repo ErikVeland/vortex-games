@@ -17,7 +17,7 @@ const ROOT_FOLDER_FILES = [
 
 function findGame() {
   return util.steam.findByAppId('294100')
-      .then(game => game.gamePath);
+    .then(game => game.gamePath);
 }
 
 function requiresLauncher(gamePath) {

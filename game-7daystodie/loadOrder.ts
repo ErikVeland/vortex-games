@@ -105,7 +105,7 @@ export async function deserialize(context: types.IExtensionContext): Promise<Loa
   const enabledModIds = Object.keys(currentModsState)
     .filter(modId => util.getSafe(currentModsState, [modId, 'enabled'], false));
   const mods: { [modId: string]: types.IMod } = util.getSafe(props.state,
-    ['persistent', 'mods', GAME_ID], {});
+                                                             ['persistent', 'mods', GAME_ID], {});
   let data: ILoadOrderEntry[] = [];
   let loFilePath;
   try {

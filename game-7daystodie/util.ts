@@ -26,14 +26,14 @@ export const relaunchExt = (api: types.IExtensionApi) => {
     text: 'The extension requires a restart to complete the UDF setup. '
         + 'The extension will now exit - please re-activate it via the games page or dashboard.',
   }, [ { label: 'Restart Extension' } ])
-  .then(async () => {
-    await purge(api);
-    const batched = [
-      actions.setDeploymentNecessary(GAME_ID, true),
-      actions.setNextProfile(undefined),
-    ];
-    util.batchDispatch(api.store, batched);
-  });
+    .then(async () => {
+      await purge(api);
+      const batched = [
+        actions.setDeploymentNecessary(GAME_ID, true),
+        actions.setNextProfile(undefined),
+      ];
+      util.batchDispatch(api.store, batched);
+    });
 }
 
 export const selectUDF = async (context: types.IExtensionContext) => {
@@ -44,10 +44,10 @@ export const selectUDF = async (context: types.IExtensionContext) => {
       + 'future. Please select your User Data Folder (UDF) - Vortex will deploy to this new location. '
       + 'Please NEVER set your UDF path to Vortex\'s staging folder.',
   },
-    [
-      { label: 'Cancel' },
-      { label: 'Select UDF' },
-    ]);
+                                           [
+                                             { label: 'Cancel' },
+                                             { label: 'Select UDF' },
+                                           ]);
   if (res.action !== 'Select UDF') {
     return Promise.reject(new util.ProcessCanceled('Cannot proceed without UDF'));
   }
@@ -107,7 +107,7 @@ export function genProps(context: types.IExtensionContext, profileId?: string): 
   }
 
   const discovery: types.IDiscoveryResult = util.getSafe(state,
-    ['settings', 'gameMode', 'discovered', GAME_ID], undefined);
+                                                         ['settings', 'gameMode', 'discovered', GAME_ID], undefined);
   if (discovery?.path === undefined) {
     return undefined;
   }
@@ -117,8 +117,8 @@ export function genProps(context: types.IExtensionContext, profileId?: string): 
 }
 
 export async function ensureLOFile(context: types.IExtensionContext,
-                      profileId?: string,
-                      props?: IProps): Promise<string> {
+                                   profileId?: string,
+                                   props?: IProps): Promise<string> {
   if (props === undefined) {
     props = genProps(context, profileId);
   }
@@ -204,7 +204,7 @@ export async function getModInfoFiles(basePath: string): Promise<string[]> {
     .then(() => Promise.resolve(filePaths));
 }
 
-export interface IAttribute extends IXmlNode<{ id: string, type: string, value: string }> { }
+export type IAttribute = IXmlNode<{ id: string, type: string, value: string }>
 export interface IXmlNode<AttributeT extends object> {
   $: AttributeT;
 }

@@ -12,7 +12,7 @@ const { testModInstaller, installMulleMod, installOfficialMod } = require('./ins
 const { migrate010, migrate020, migrate0212 } = require('./migrations');
 
 const { isOfficialModType, streamingAssetsPath, getModName,
-        getGameVersion, getMinModVersion, getDiscoveryPath, missingGameJsonError } = require('./util');
+  getGameVersion, getMinModVersion, getDiscoveryPath, missingGameJsonError } = require('./util');
 
 const React = require('react');
 const BS = require('react-bootstrap');
@@ -67,10 +67,10 @@ function createModDirectories(discovery) {
 async function purgeMods(discovery, api) {
   const baseModsPath = path.join(discovery.path, streamingAssetsPath());
   await api.emitAndAwait('purge-mods-in-path',
-    GAME_ID, 'bas-official-modtype', path.join(baseModsPath, 'Mods'));
+                         GAME_ID, 'bas-official-modtype', path.join(baseModsPath, 'Mods'));
 
   return await api.emitAndAwait('purge-mods-in-path',
-    GAME_ID, 'bas-legacy-modtype', baseModsPath);
+                                GAME_ID, 'bas-legacy-modtype', baseModsPath);
 }
 
 async function ensureModType(discovery, api) {
@@ -86,10 +86,10 @@ async function ensureModType(discovery, api) {
                                                   && mods[key].type !== targetModType);
   return (invalidMods.length > 0)
     ? purgeMods(discovery, api).then(() => {
-        invalidMods.forEach(key => api.store.dispatch(actions.setModType(GAME_ID, key, targetModType)));
-        api.store.dispatch(actions.setDeploymentNecessary(GAME_ID, true));
-        return Promise.resolve();
-      })
+      invalidMods.forEach(key => api.store.dispatch(actions.setModType(GAME_ID, key, targetModType)));
+      api.store.dispatch(actions.setDeploymentNecessary(GAME_ID, true));
+      return Promise.resolve();
+    })
     : Promise.resolve();
 }
 
@@ -144,17 +144,17 @@ async function getDeployedExternal(context, managedNames, loKeys) {
   await util.walk(modsPath, async (iter, stats) => {
     const modName = path.basename(iter);
     if (stats.isDirectory() && !invalidNames.includes(modName)) {
-        const hasManifest = await fs.statAsync(path.join(iter, MOD_MANIFEST))
-          .then(() => Promise.resolve(true))
-          .catch(err => Promise.resolve(false));
-        if (hasManifest) {
-          if (loKeys.includes(modName)) {
-            modNames.known.push(modName);
-          } else {
-            modNames.unknown.push(modName);
-          }
+      const hasManifest = await fs.statAsync(path.join(iter, MOD_MANIFEST))
+        .then(() => Promise.resolve(true))
+        .catch(err => Promise.resolve(false));
+      if (hasManifest) {
+        if (loKeys.includes(modName)) {
+          modNames.known.push(modName);
+        } else {
+          modNames.unknown.push(modName);
         }
       }
+    }
   })
 
   return Promise.resolve(modNames);
@@ -321,19 +321,19 @@ async function preSort(context, items, direction, refreshType) {
 function infoComponent(context, props) {
   const t = context.api.translate;
   return React.createElement(BS.Panel, { id: 'loadorderinfo' },
-    React.createElement('h2', {}, t('Managing your load order', { ns: I18N_NAMESPACE })),
-    React.createElement(FlexLayout.Fixed, { style: { height: '30%' } },
-    React.createElement('div', {},
-    React.createElement('p', {}, t('You can adjust the load order for Blade and Sorcery by dragging and dropping '
+                             React.createElement('h2', {}, t('Managing your load order', { ns: I18N_NAMESPACE })),
+                             React.createElement(FlexLayout.Fixed, { style: { height: '30%' } },
+                                                 React.createElement('div', {},
+                                                                     React.createElement('p', {}, t('You can adjust the load order for Blade and Sorcery by dragging and dropping '
     + 'mods up or down on this page.', { ns: I18N_NAMESPACE })))),
-    React.createElement('div', { style: { height: '70%' } },
-      React.createElement('p', {}, t('Please note:', { ns: I18N_NAMESPACE })),
-      React.createElement('ul', {},
-        React.createElement('li', {}, t('The mods displayed in this page are valid mods, confirmed to be deployed inside the '
+                             React.createElement('div', { style: { height: '70%' } },
+                                                 React.createElement('p', {}, t('Please note:', { ns: I18N_NAMESPACE })),
+                                                 React.createElement('ul', {},
+                                                                     React.createElement('li', {}, t('The mods displayed in this page are valid mods, confirmed to be deployed inside the '
           + 'game\'s mods folder. If a mod is missing, try deploying your mods - if it\'s still missing - it\'s not a valid mod!', { ns: I18N_NAMESPACE })),
-        React.createElement('li', {}, t('If you cannot see your manually added mod in this load order - click refresh and Vortex '
+                                                                     React.createElement('li', {}, t('If you cannot see your manually added mod in this load order - click refresh and Vortex '
           + 'should be able to pick it up as long as it has a valid manifest.json file.', { ns: I18N_NAMESPACE })),
-        React.createElement('li', {}, t('The load order file will only be picked up by the game in version 8.4 Beta 5 and above', { ns: I18N_NAMESPACE })))));
+                                                                     React.createElement('li', {}, t('The load order file will only be picked up by the game in version 8.4 Beta 5 and above', { ns: I18N_NAMESPACE })))));
 }
 
 function resolveGameVersion(api, discoveryPath) {
@@ -397,20 +397,20 @@ function main(context) {
   // Only reason why we're still keeping this installer is to block users from
   //  installing outdated mods.
   context.registerInstaller('bas-mulledk19-mod', 25,
-    (files, gameId) => testModInstaller(files, gameId, MULLE_MOD_INFO),
-    (files, destinationPath, gameId, progressDelegate) => installMulleMod(files, destinationPath, gameId, progressDelegate, context.api));
+                            (files, gameId) => testModInstaller(files, gameId, MULLE_MOD_INFO),
+                            (files, destinationPath, gameId, progressDelegate) => installMulleMod(files, destinationPath, gameId, progressDelegate, context.api));
 
   context.registerInstaller('bas-official-mod', 25,
-    (files, gameId) =>
-      testModInstaller(files, gameId, MOD_MANIFEST),
-    (files, destinationPath, gameId, progressDelegate) =>
-      installOfficialMod(files, destinationPath, gameId, progressDelegate, context.api));
+                            (files, gameId) =>
+                              testModInstaller(files, gameId, MOD_MANIFEST),
+                            (files, destinationPath, gameId, progressDelegate) =>
+                              installOfficialMod(files, destinationPath, gameId, progressDelegate, context.api));
 
   context.registerModType('bas-official-modtype', 15, (gameId) => (gameId === GAME_ID),
-    getOfficialDestination, () => Promise.resolve(false), { name: 'Official Mod (v1.0+)' });
+                          getOfficialDestination, () => Promise.resolve(false), { name: 'Official Mod (v1.0+)' });
 
   context.registerModType('bas-legacy-modtype', 15, (gameId) => (gameId === GAME_ID),
-    getLegacyDestination, () => Promise.resolve(false), { name: 'Legacy Mod (v0.8.3 and below)' });
+                          getLegacyDestination, () => Promise.resolve(false), { name: 'Legacy Mod (v0.8.3 and below)' });
 
   let refreshFunc;
   context.registerLoadOrderPage({
@@ -431,7 +431,7 @@ function main(context) {
           }
           const allowReport = !['EPERM', 'EISDIR'].includes(err.code) && !(err instanceof GameNotDiscoveredException)
           context.api.showErrorNotification('failed to write to load order file', err,
-            { allowReport });
+                                            { allowReport });
         });
     },
   });
@@ -495,9 +495,9 @@ function main(context) {
                 + 'since the last deployment. Some of your mods may not work correctly. '
                 + 'Please restart Vortex to fix this issue.',
           },
-          [
-            { label: 'Ok', action: () => resolve() },
-          ])
+                                 [
+                                   { label: 'Ok', action: () => resolve() },
+                                 ])
         })
         : Promise.resolve();
     });

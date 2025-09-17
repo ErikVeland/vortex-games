@@ -34,11 +34,11 @@ function findGame() {
   return util.GameStoreHelper.findByAppId([STEAM_ID, GOG_ID])
     .then(game => game.gamePath)
     .catch(() => readRegistryKey('HKEY_LOCAL_MACHINE',
-      `SOFTWARE\\WOW6432Node\\GOG.com\\Games\\${GOG_ID}`,
-      'PATH'))
+                                 `SOFTWARE\\WOW6432Node\\GOG.com\\Games\\${GOG_ID}`,
+                                 'PATH'))
     .catch(() => readRegistryKey('HKEY_LOCAL_MACHINE',
-      `SOFTWARE\\GOG.com\\Games\\${GOG_ID}`,
-      'PATH'))
+                                 `SOFTWARE\\GOG.com\\Games\\${GOG_ID}`,
+                                 'PATH'))
 }
 
 function prepareForModding(discovery) {
@@ -97,8 +97,8 @@ function main(context) {
   // The "unofficial patch" mod modifies the mods folder. GoG seems to include
   //  this by default ?
   context.registerModType('vtmb-up-modtype', 25,
-    (gameId) => gameId === GAME_ID, () => getUnofficialModPath(context.api),
-    (instructions) => isUPModType(context.api, instructions));
+                          (gameId) => gameId === GAME_ID, () => getUnofficialModPath(context.api),
+                          (instructions) => isUPModType(context.api, instructions));
 }
 
 module.exports = {

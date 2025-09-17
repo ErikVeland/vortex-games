@@ -32,7 +32,7 @@ export async function isLoose(instructions: types.IInstruction[]): Promise<boole
   const hasGenOrPublicFolder:boolean = copyInstructions.find(instr =>
     instr.source.indexOf('Generated' + path.sep) !== -1 || 
     instr.source.indexOf('Public' + path.sep) !== -1
-    ) !== undefined;
+  ) !== undefined;
 
   logDebug('isLoose', { instructions: instructions, hasDataFolder: hasDataFolder || hasGenOrPublicFolder });
 

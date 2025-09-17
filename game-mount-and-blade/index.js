@@ -119,7 +119,7 @@ async function resolveGameVersion(discoveryPath, mnbGame) {
 }
 
 function prepareForModding(discovery) {
-    return fs.ensureDirAsync(path.join(discovery.path, 'modules'));
+  return fs.ensureDirAsync(path.join(discovery.path, 'modules'));
 }
 
 function main(context) {
@@ -185,8 +185,8 @@ function installOverrideMod(files, nativeModuleName) {
     .filter(file => MOD_EXT_DESTINATION[path.extname(file).toLowerCase()] !== undefined)
     .map(file => {
       const fileType = path.extname(file).toLowerCase();
-      let extFolder = MOD_EXT_DESTINATION[fileType];
-      let finalDestination = path.join(nativeModuleName, extFolder, path.basename(file));
+      const extFolder = MOD_EXT_DESTINATION[fileType];
+      const finalDestination = path.join(nativeModuleName, extFolder, path.basename(file));
 
       return {
         type: 'copy',
@@ -208,19 +208,19 @@ function installModuleMod(files, moduleName) {
         // Remove all precedent folders up to the modRoot directory.
         //  this way we ensure we don't create huge pointless folder structures
         //  which the M&B game can't support.
-        const finalDestination = trimIndex !== 0 
-          ? path.join(moduleName, file.substr(trimIndex))
-          : path.join(moduleName, file);
+    const finalDestination = trimIndex !== 0 
+      ? path.join(moduleName, file.substr(trimIndex))
+      : path.join(moduleName, file);
         
-        const instruction = {
-          type: 'copy',
-          source: file,
-          destination: finalDestination,
-        }
-        return (instruction.destination !== path.join(moduleName, ''))
-          ? instruction
-          : undefined;
-    });
+    const instruction = {
+      type: 'copy',
+      source: file,
+      destination: finalDestination,
+    }
+    return (instruction.destination !== path.join(moduleName, ''))
+      ? instruction
+      : undefined;
+  });
 
   return instructions.filter(inst => inst !== undefined);
 }

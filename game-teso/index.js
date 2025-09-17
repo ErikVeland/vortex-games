@@ -6,7 +6,7 @@ const winapi = require('winapi-bindings');
 
 function findGame() {
   try {
-    let regKey = (process.arch === 'x32')
+    const regKey = (process.arch === 'x32')
       ? 'Software\\Zenimax_Online\\Launcher'
       : 'Software\\Wow6432Node\\Zenimax_Online\\Launcher';
 

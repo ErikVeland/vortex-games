@@ -39,39 +39,39 @@ function findGame() {
   return util.steam.findByAppId(STEAM_ID.toString())
     .then(game => game.gamePath)
     .catch(() => readRegistryKey('HKEY_LOCAL_MACHINE',
-      `SOFTWARE\\WOW6432Node\\GOG.com\\Games\\${GOG_ID}`,
-      'PATH'))
+                                 `SOFTWARE\\WOW6432Node\\GOG.com\\Games\\${GOG_ID}`,
+                                 'PATH'))
     .catch(() => readRegistryKey('HKEY_LOCAL_MACHINE',
-      `SOFTWARE\\GOG.com\\Games\\${GOG_ID}`,
-      'PATH'))
+                                 `SOFTWARE\\GOG.com\\Games\\${GOG_ID}`,
+                                 'PATH'))
 }
 
 function prepareForModding(discovery) {
   const showUMMDialog = () => new Promise((resolve, reject) => {
     _API.store.dispatch(actions.showDialog('question', 'Action required',
-      {
-        message: 'Most Dawn of Man mods require Unity Mod Manager to be installed to run correctly.\n'
+                                           {
+                                             message: 'Most Dawn of Man mods require Unity Mod Manager to be installed to run correctly.\n'
                + 'Once installed, UMM must be used to inject your mods into the game itself.\n'
                + 'For ease of use, UMM comes pre-added as a tool for Dawn of Man but you may have\n'
                + 'to configure it manually.\n'
                + 'For usage information and download link please see UMM\'s page.\n\n'
                + 'Please note: simpler "Scenario" mods can be used without UMM.'
-      },
-      [
-        { label: 'Continue', action: () => resolve() },
-        { label: 'More on Vortex Tools', action: () => {
-          util.opn('https://wiki.nexusmods.com/index.php/Category:Tool_Setup')
-            .then(() => showUMMDialog())
-            .catch(err => undefined);
-          resolve();
-        }},
-        { label: 'Go to UMM page', action: () => {
-          util.opn('https://www.nexusmods.com/site/mods/21/').catch(err => undefined);
+                                           },
+                                           [
+                                             { label: 'Continue', action: () => resolve() },
+                                             { label: 'More on Vortex Tools', action: () => {
+                                               util.opn('https://wiki.nexusmods.com/index.php/Category:Tool_Setup')
+                                                 .then(() => showUMMDialog())
+                                                 .catch(err => undefined);
+                                               resolve();
+                                             }},
+                                             { label: 'Go to UMM page', action: () => {
+                                               util.opn('https://www.nexusmods.com/site/mods/21/').catch(err => undefined);
           // We want to go forward even if UMM is not installed as the scenario modType
           //  can be installed without UMM.
-          resolve();
-        }},
-      ]));
+                                               resolve();
+                                             }},
+                                           ]));
   });
 
   return fs.ensureDirWritableAsync(getSceneFolder(), () => Promise.resolve())
@@ -174,8 +174,8 @@ function main(context) {
   });
 
   context.registerModType('dom-scene-modtype', 25,
-    (gameId) => gameId === GAME_ID, () => getSceneFolder(),
-    (instructions) => endsWithPattern(instructions, SCENE_FILE_EXT));
+                          (gameId) => gameId === GAME_ID, () => getSceneFolder(),
+                          (instructions) => endsWithPattern(instructions, SCENE_FILE_EXT));
 
   context.registerInstaller('dom-scene-installer', 25, testSceneMod, installSceneMod);
   context.registerInstaller('dom-mod', 25, testMod, installMod);

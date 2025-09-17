@@ -90,8 +90,8 @@ function prepareForModding(discovery, api) {
           }, [
             { label: 'Continue', action: (dismiss) => dismiss() },
             { label: 'Go to Stracker\'s Loader mod page', action: (dismiss) => {
-                util.opn('https://www.nexusmods.com/monsterhunterworld/mods/1982').catch(err => undefined);
-                dismiss();
+              util.opn('https://www.nexusmods.com/monsterhunterworld/mods/1982').catch(err => undefined);
+              dismiss();
             }},
           ]);
         },
@@ -110,10 +110,10 @@ function prepareForModding(discovery, api) {
       const assemblyPath = path.join(discovery.path, file);
       return fs.statAsync(assemblyPath)
     })
-    .then(() => Promise.resolve())
-    .catch(err => (err.code === 'ENOENT')
-      ? raiseNotif()
-      : Promise.reject(err)));
+      .then(() => Promise.resolve())
+      .catch(err => (err.code === 'ENOENT')
+        ? raiseNotif()
+        : Promise.reject(err)));
 }
 
 function main(context) {
@@ -124,13 +124,13 @@ function main(context) {
              + 'will still be installed, but please keep in mind that this mod will '
              + 'not function without ReShade.', { ns: I18N_NAMESPACE }),
     },
-    [
-      { label: 'Continue', action: () => resolve() },
-      { label: 'Download ReShade', action: () => {
-          util.opn('https://reshade.me').catch(err => undefined);
-          resolve();
-      }},
-    ]));
+                                          [
+                                            { label: 'Continue', action: () => resolve() },
+                                            { label: 'Download ReShade', action: () => {
+                                              util.opn('https://reshade.me').catch(err => undefined);
+                                              resolve();
+                                            }},
+                                          ]));
   });
 
   const getDiscoveryPath = (api) => {
@@ -245,8 +245,8 @@ function installContent(files,
 
 function isReshadeMod(files, gameId) {
   const filtered = files.filter(file => (file.split(path.sep)
-                                             .map(element => element.toLowerCase())
-                                             .indexOf(NATIVE_PC_FOLDER.toLowerCase()) === -1)
+    .map(element => element.toLowerCase())
+    .indexOf(NATIVE_PC_FOLDER.toLowerCase()) === -1)
                                      && (path.extname(file) === '.ini'));
 
   const supported = (gameId === GAME_ID) && (filtered.length > 0);

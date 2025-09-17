@@ -34,7 +34,7 @@ function getGameVersion(gamePath, exePath) {
   return fileVersion + '-VR';
 }
 
-let tools = [
+const tools = [
   {
     id: 'FO4VREdit',
     name: 'FO4VREdit',

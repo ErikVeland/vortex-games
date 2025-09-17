@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { genCollectionLoadOrder, getModId } from './util';
 
 import { ComponentEx, EmptyPlaceholder, FlexLayout,
-  selectors, types, Usage, util } from 'vortex-api';
+         selectors, types, Usage, util } from 'vortex-api';
 
 const NAMESPACE: string = 'generic-load-order-extension';
 
@@ -60,17 +60,17 @@ class CollectionsDataView extends ComponentEx<IProps, IComponentState> {
         <div style={{ overflow: 'auto' }}>
           <h4>{t('Load Order')}</h4>
           <p>
-          {t('Below is a preview of the load order for the mods that ' +
+            {t('Below is a preview of the load order for the mods that ' +
              'are included in the current collection. If you wish to modify the load ' +
              'please do so by opening the Load Order page; any changes made there ' +
              'will be reflected in this collection.')
-          }
+            }
           </p>
           <ListGroup id='collections-load-order-list'>
             {sortedMods.map(this.renderModEntry)}
           </ListGroup>
         </div>
-    ) : this.renderPlaceholder();
+      ) : this.renderPlaceholder();
   }
 
   private openLoadOrderPage = () => {

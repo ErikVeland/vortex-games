@@ -114,9 +114,9 @@ function prepareForModding(api: types.IExtensionApi, discovery: types.IDiscovery
                 'If you would prefer to manage a different language you can change the path to the game using the "Manually Set Location" option in the games tab.',
               parameters: { gameName, storeName }
             }, 
-            [ 
-              { label: 'Close', action: () => api.suppressNotification(`${GAME_ID}-locale-message`) }
-            ]
+                           [ 
+                             { label: 'Close', action: () => api.suppressNotification(`${GAME_ID}-locale-message`) }
+                           ]
             );
           }
         }
@@ -193,7 +193,7 @@ function main(context: types.IExtensionContext) {
       const plugins = [];
       try {
         await walk(modPath, entries => {
-          for (let entry of entries) {
+          for (const entry of entries) {
             if (['.esp', '.esm'].includes(path.extname(entry.filePath.toLowerCase()))) {
               plugins.push(path.basename(entry.filePath));
             }

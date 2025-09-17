@@ -43,7 +43,7 @@ function modPath() {
   return path.join(remote.app.getPath('documents'), 'Electronic Arts', 'The Sims 3', 'Mods', 'Packages');
 }
 
-let tools = [];
+const tools = [];
 
 async function getGameVersion(gamePath) {
   const skuInfo = await fs.readFileAsync(path.join(gamePath, 'game', 'bin', 'skuversion.txt'), { encoding: 'utf8' });

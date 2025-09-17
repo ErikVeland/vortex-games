@@ -24,7 +24,7 @@ export function migrate020(api, oldVersion): Promise<void> {
       id: '7dtd-requires-upgrade',
       type: 'warning',
       message: api.translate('Mods for 7 Days to Die need to be reinstalled',
-        { ns: I18N_NAMESPACE }),
+                             { ns: I18N_NAMESPACE }),
       noDismiss: true,
       actions: [
         {
@@ -61,7 +61,7 @@ export async function migrate100(context, oldVersion): Promise<void> {
 
   const state = context.api.store.getState();
   const discoveryPath = util.getSafe(state,
-    ['settings', 'gameMode', 'discovered', GAME_ID, 'path'], undefined);
+                                     ['settings', 'gameMode', 'discovered', GAME_ID, 'path'], undefined);
 
   const activatorId = selectors.activatorForGame(state, GAME_ID);
   const activator = util.getActivator(activatorId);
@@ -70,7 +70,7 @@ export async function migrate100(context, oldVersion): Promise<void> {
   }
 
   const mods: { [modId: string]: types.IMod } = util.getSafe(state,
-    ['persistent', 'mods', GAME_ID], {});
+                                                             ['persistent', 'mods', GAME_ID], {});
 
   if (Object.keys(mods).length === 0) {
     // No mods - no problem.
@@ -113,13 +113,13 @@ export async function migrate1011(context, oldVersion): Promise<void> {
 
   const state = context.api.store.getState();
   const discoveryPath = util.getSafe(state,
-    ['settings', 'gameMode', 'discovered', GAME_ID, 'path'], undefined);
+                                     ['settings', 'gameMode', 'discovered', GAME_ID, 'path'], undefined);
   if (!discoveryPath) {
     return Promise.resolve();
   }
 
   const mods: { [modId: string]: types.IMod } = util.getSafe(state,
-    ['persistent', 'mods', GAME_ID], {});
+                                                             ['persistent', 'mods', GAME_ID], {});
 
   if (Object.keys(mods).length === 0) {
     // No mods - no problem.

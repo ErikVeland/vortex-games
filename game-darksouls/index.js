@@ -23,7 +23,7 @@ class DarkSouls {
 
   queryPath() {
     return util.steam.findByAppId('211420')
-        .then(game => game.gamePath);
+      .then(game => game.gamePath);
   }
 
   queryModPath() {
@@ -32,7 +32,7 @@ class DarkSouls {
 
   requiresLauncher(gamePath, store) {
 
-      return store === 'steam' ?  Promise.resolve({ launcher: 'steam' }) : Promise.resolve(undefined);
+    return store === 'steam' ?  Promise.resolve({ launcher: 'steam' }) : Promise.resolve(undefined);
   }
 
   executable() {
@@ -41,23 +41,23 @@ class DarkSouls {
 
   setup(discovery) {
     return fs.statAsync(path.join(discovery.path, this.queryModPath(discovery.path)))
-        .catch(err => {
-          if (err.code !== 'ENOENT') {
-            return Promise.reject(err);
-          }
-          return new Promise((resolve, reject) => {
-            this.context.api.store.dispatch(actions.showDialog(
-                'question', 'Action required',
-                { message: 'Modding Dark Souls requires a tool called DSfix' }, [
-                  { label: 'Cancel', action: () => reject(new util.UserCanceled()) },
-                  { label: 'Go to DSfix page', action: () => {
-                    util.opn('https://www.nexusmods.com/darksouls/mods/19').catch(err => undefined);
-                    resolve();
-                  } },
-                  { label: 'Ignore', action: () => resolve() }
-                ]));
-          });
+      .catch(err => {
+        if (err.code !== 'ENOENT') {
+          return Promise.reject(err);
+        }
+        return new Promise((resolve, reject) => {
+          this.context.api.store.dispatch(actions.showDialog(
+            'question', 'Action required',
+            { message: 'Modding Dark Souls requires a tool called DSfix' }, [
+              { label: 'Cancel', action: () => reject(new util.UserCanceled()) },
+              { label: 'Go to DSfix page', action: () => {
+                util.opn('https://www.nexusmods.com/darksouls/mods/19').catch(err => undefined);
+                resolve();
+              } },
+              { label: 'Ignore', action: () => resolve() }
+            ]));
         });
+      });
   }
 }
 

@@ -96,8 +96,8 @@ function main(context) {
   context.registerInstaller('moduleinstaller', 25, testSupported, install);
 
   context.registerModType('nwn2-override-mod', 25, (gameId) => gameId === GAME_ID,
-    () => overrideModPath(),
-    () => Promise.resolve(false), { name: 'NWN2 Override Mod' });
+                          () => overrideModPath(),
+                          () => Promise.resolve(false), { name: 'NWN2 Override Mod' });
 
   return true;
 }

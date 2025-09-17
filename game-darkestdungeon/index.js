@@ -79,16 +79,16 @@ function walkAsync(dir, gamePathIndex) {
           return Promise.resolve()
         }
       })
-      .catch(err => {
+        .catch(err => {
         // The point of this function is to map out the game's
         //  directory structure - any errors raised during mapping
         //  simply signfies an unavailable path and therefore
         //  shouldn't block the rest of the process (we log instead)
-        log('warn', '[DD] unable to add file to dir struct', err);
-        return Promise.resolve()
-      })
+          log('warn', '[DD] unable to add file to dir struct', err);
+          return Promise.resolve()
+        })
     })
-    .then(() => Promise.resolve(_DIRECTORY_STRUCT));
+      .then(() => Promise.resolve(_DIRECTORY_STRUCT));
   });
 }
 
@@ -108,11 +108,11 @@ function findGame() {
   return util.steam.findByAppId(STEAM_ID)
     .then(game => game.gamePath)
     .catch(() => readRegistryKey('HKEY_LOCAL_MACHINE',
-      `SOFTWARE\\WOW6432Node\\GOG.com\\Games\\${GOG_ID}`,
-      'PATH'))
+                                 `SOFTWARE\\WOW6432Node\\GOG.com\\Games\\${GOG_ID}`,
+                                 'PATH'))
     .catch(() => readRegistryKey('HKEY_LOCAL_MACHINE',
-      `SOFTWARE\\GOG.com\\Games\\${GOG_ID}`,
-      'PATH'))
+                                 `SOFTWARE\\GOG.com\\Games\\${GOG_ID}`,
+                                 'PATH'))
 }
 
 function prepareForModding(discovery) {
@@ -211,7 +211,7 @@ function testSupportedNoProject(files, gameId) {
   // Mod is supported if the file structure matches the game's dir structure OR
   //  if we are able to find portraits within the mod's archive.
   const supported = ((filtered.find(file => _DIRECTORY_STRUCT.find(dir =>
-        file.indexOf(dir) !== -1) !== undefined) !== undefined)
+    file.indexOf(dir) !== -1) !== undefined) !== undefined)
     || (portraits.length > 0));
 
   return Promise.resolve({
@@ -306,7 +306,7 @@ function installNoProject(files, destinationPath) {
     })
 
     const leftOver = onlyFiles.filter(file =>
-         (dirStructure.find(x => x.source === file) === undefined)
+      (dirStructure.find(x => x.source === file) === undefined)
       && (file.split(path.sep).indexOf(heroesRoot) !== -1));
 
     dirStructure = dirStructure.concat(leftOver.map(file => {

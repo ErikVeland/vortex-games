@@ -14,7 +14,7 @@ const MS_ID = 'BethesdaSoftworks.Fallout4-PC';
 const GOG_ID = '1998527297';
 const EPIC_ID = '61d52ce4d09d41e48800c22784d13ae8';
 
-let tools = [
+const tools = [
   {
     id: 'FO4Edit',
     name: 'FO4Edit',

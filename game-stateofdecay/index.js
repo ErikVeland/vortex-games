@@ -3,10 +3,10 @@ const { log, util } = require('vortex-api');
 
 function findGame() {
   return util.steam.findByName('State of Decay: Year-One')
-      .catch(err => err instanceof util.GameNotFound
-        ? util.steam.findByName('State of Decay')
-        : Promise.reject(err))
-      .then(game => game.gamePath);
+    .catch(err => err instanceof util.GameNotFound
+      ? util.steam.findByName('State of Decay')
+      : Promise.reject(err))
+    .then(game => game.gamePath);
 }
 
 function main(context) {

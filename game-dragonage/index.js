@@ -50,7 +50,7 @@ function queryModPath() {
 function addinsPath() {
   if (_ADDINS_PATH === undefined) {
     _ADDINS_PATH = path.join(appUni.getPath('documents'), 'Bioware', 'Dragon Age',
-      'Settings', ADDINS_FILE);
+                             'Settings', ADDINS_FILE);
   }
 
   return _ADDINS_PATH;
@@ -98,9 +98,9 @@ function readAddinsData(mergeDir) {
   return fs.readFileAsync(path.join(mergeDir, 'Settings', ADDINS_FILE))
     .catch(err => (err.code === 'ENOENT')
       ? fs.readFileAsync(addinsPath())
-          .catch(fallbackErr => (fallbackErr.code === 'ENOENT')
-              ? Promise.resolve(emptyAddins)
-              : Promise.reject(fallbackErr))
+        .catch(fallbackErr => (fallbackErr.code === 'ENOENT')
+          ? Promise.resolve(emptyAddins)
+          : Promise.reject(fallbackErr))
       : Promise.reject(err)
     );
 }
@@ -108,43 +108,43 @@ function readAddinsData(mergeDir) {
 function merge(filePath, mergeDir) {
   let manifest;
   return fs.readFileAsync(filePath)
-      .then(async xmlData => {
-        try {
-          manifest = await parseStringPromise(xmlData);
-        } catch (err) {
-          return Promise.reject(new util.ProcessCanceled(`File invalid "${filePath}"`));
-        }
-        return Promise.resolve();
-      })
-      .then(() => readAddinsData(mergeDir))
-      .then(async addinsData => new Promise(async (resolve, reject) => {
-        try {
-          const data = await parseStringPromise(addinsData);
-          return resolve(data);
-        } catch (err) {
-          return resolve(await parseStringPromise(emptyAddins));
-        }
-      }))
-      .then(async addinsData => {
-        const list = addinsData?.AddInsList?.AddInItem;
-        const manifestList = manifest?.Manifest?.AddInsList !== undefined
-          ? manifest.Manifest.AddInsList.reduce((accum, add) => {
-            accum = accum.concat(...add?.AddInItem);
-            return accum;
-          }, [])
-          : [];
-        if (list === undefined) {
-          return Promise.reject(new util.ProcessCanceled(`Addins file is invalid - "${path.join(mergeDir, 'Settings', ADDINS_FILE)}"`));
-        }
-        addinsData.AddInsList.AddInItem = [].concat([...list], [...manifestList]);
-        const destPath = path.join(mergeDir, 'Settings');
-        return fs.ensureDirWritableAsync(destPath)
-          .then(async () => {
-            const builder = new Builder();
-            const xml = builder.buildObject(addinsData);
-            return fs.writeFileAsync(path.join(destPath, ADDINS_FILE), xml, { encoding: 'utf-8' })
-          });
-      });
+    .then(async xmlData => {
+      try {
+        manifest = await parseStringPromise(xmlData);
+      } catch (err) {
+        return Promise.reject(new util.ProcessCanceled(`File invalid "${filePath}"`));
+      }
+      return Promise.resolve();
+    })
+    .then(() => readAddinsData(mergeDir))
+    .then(async addinsData => new Promise(async (resolve, reject) => {
+      try {
+        const data = await parseStringPromise(addinsData);
+        return resolve(data);
+      } catch (err) {
+        return resolve(await parseStringPromise(emptyAddins));
+      }
+    }))
+    .then(async addinsData => {
+      const list = addinsData?.AddInsList?.AddInItem;
+      const manifestList = manifest?.Manifest?.AddInsList !== undefined
+        ? manifest.Manifest.AddInsList.reduce((accum, add) => {
+          accum = accum.concat(...add?.AddInItem);
+          return accum;
+        }, [])
+        : [];
+      if (list === undefined) {
+        return Promise.reject(new util.ProcessCanceled(`Addins file is invalid - "${path.join(mergeDir, 'Settings', ADDINS_FILE)}"`));
+      }
+      addinsData.AddInsList.AddInItem = [].concat([...list], [...manifestList]);
+      const destPath = path.join(mergeDir, 'Settings');
+      return fs.ensureDirWritableAsync(destPath)
+        .then(async () => {
+          const builder = new Builder();
+          const xml = builder.buildObject(addinsData);
+          return fs.writeFileAsync(path.join(destPath, ADDINS_FILE), xml, { encoding: 'utf-8' })
+        });
+    });
 }
 
 function main(context) {

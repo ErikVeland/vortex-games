@@ -15,9 +15,9 @@ const MOD_FILE_EXT = '.mod';
 
 function findGame() {
   return util.steam.findByAppId('233860')
-      .then(game => game.gamePath);
+    .then(game => game.gamePath);
 }
-let tools = [
+const tools = [
   {
     id: 'nvidiaProfileInspector',
     name: 'Darkmod inspector',
@@ -43,14 +43,14 @@ let tools = [
 ];
 function prepareForModding(discovery) {
   return fs.ensureDirWritableAsync(path.join(discovery.path, 'mods'),
-    () => Promise.resolve());
+                                   () => Promise.resolve());
 }
 
 // Kenshi's Steam version requires the game to be executed
 //  via Steam in order for it to add workshop mods.
 function requiresLauncher(gamePath, store) {
 
-    return store === 'steam' ?  Promise.resolve({ launcher: 'steam' }) : Promise.resolve(undefined);
+  return store === 'steam' ?  Promise.resolve({ launcher: 'steam' }) : Promise.resolve(undefined);
 }
 
 function installContent(files) {
@@ -110,7 +110,7 @@ function getGameVersion(discoveryPath) {
 }
 
 function main(context) {
-context.registerGame({
+  context.registerGame({
     id: KENSHI_ID,
     name: 'Kenshi',
     mergeMods: true,

@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 
 import { ComponentEx, EmptyPlaceholder, FlexLayout, Icon,
-  selectors, types, util } from 'vortex-api';
+         selectors, types, util } from 'vortex-api';
 
 import { IExtendedInterfaceProps, ILoadOrder, ILoadOrderEntry } from '../collections/types';
 import { genCollectionLoadOrder } from '../collections/util';
@@ -55,7 +55,7 @@ class CollectionsDataView extends ComponentEx<IProps, IComponentState> {
         <div style={{ overflow: 'auto' }}>
           <h4>{t('Witcher 3 Merged Data')}</h4>
           <p>
-          {t('The Witcher 3 game extension executes a series of file merges for UI/menu mods '
+            {t('The Witcher 3 game extension executes a series of file merges for UI/menu mods '
            + 'whenever the mods are deployed - these will be included in the collection. '
            + '(separate from the ones done using the script '
            + 'merger utility) To ensure that Vortex includes the correct data when '
@@ -63,7 +63,7 @@ class CollectionsDataView extends ComponentEx<IProps, IComponentState> {
            + 'deployed before attempting to upload the collection.')}
           </p>
           <p>
-          {t('Additionally - please remember that any script merges (if applicable) done '
+            {t('Additionally - please remember that any script merges (if applicable) done '
            + 'through the script merger utility, should be reviewed before uploading, to '
            + 'only include merges that are necessary for the collection to function correctly. '
            + 'Merged scripts referencing a mod that is not included in your collection will most '
@@ -71,7 +71,7 @@ class CollectionsDataView extends ComponentEx<IProps, IComponentState> {
           </p>
           <h4>{t('Load Order')}</h4>
           <p>
-          {t('This is a snapshot of the load order information that '
+            {t('This is a snapshot of the load order information that '
            + 'will be exported with this collection.')}
           </p>
           {this.renderLoadOrderEditInfo()}
@@ -79,7 +79,7 @@ class CollectionsDataView extends ComponentEx<IProps, IComponentState> {
             {sortedMods.map(this.renderModEntry)}
           </ListGroup>
         </div>
-    ) : this.renderPlaceholder();
+      ) : this.renderPlaceholder();
   }
 
   private renderLoadOrderEditInfo = () => {

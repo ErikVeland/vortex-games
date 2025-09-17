@@ -69,11 +69,11 @@ function findGame(kotorGame) {
   return util.steam.findByAppId(steamId)
     .then(game => game.gamePath)
     .catch(() => readRegistryKey('HKEY_LOCAL_MACHINE',
-      `SOFTWARE\\WOW6432Node\\GOG.com\\Games\\${gogId}`,
-      'PATH'))
+                                 `SOFTWARE\\WOW6432Node\\GOG.com\\Games\\${gogId}`,
+                                 'PATH'))
     .catch(() => readRegistryKey('HKEY_LOCAL_MACHINE',
-      `SOFTWARE\\GOG.com\\Games\\${gogId}`,
-      'PATH'));
+                                 `SOFTWARE\\GOG.com\\Games\\${gogId}`,
+                                 'PATH'));
 }
 
 function prepareForModding(discovery) {
@@ -112,12 +112,12 @@ function main(context) {
   })
 
   context.registerModType('kotor-root', 10, isKotorGame,
-    () => {
-      const state = context.api.getState();
-      const gameMode = selectors.activeGameId(state);
-      const discovery = selectors.discoveryByGame(state, gameMode);
-      return discovery?.path;
-    }, () => Promise.resolve(false), { name: 'Root Mod' });
+                          () => {
+                            const state = context.api.getState();
+                            const gameMode = selectors.activeGameId(state);
+                            const discovery = selectors.discoveryByGame(state, gameMode);
+                            return discovery?.path;
+                          }, () => Promise.resolve(false), { name: 'Root Mod' });
 
   context.registerInstaller('kotor-tslpatcher', 10, testTSLSupported, () => installTSLContent(context.api));
   context.registerInstaller('kotor-tslpatcher-mod', 10, testTSLModSupported, () => installTSLModContent(context.api));
@@ -185,7 +185,7 @@ function testTSLModSupported(files, gameId) {
 
 function installTSLModContent(api) {
   api.showErrorNotification('Invalid Mod',
-    'The mod you\'re installing is meant to be installed/run with the TSLPatcher tool - Vortex cannot install this mod', { allowReport: false });
+                            'The mod you\'re installing is meant to be installed/run with the TSLPatcher tool - Vortex cannot install this mod', { allowReport: false });
   return Promise.reject(new util.ProcessCanceled('Invalid mod'));
 }
 
@@ -199,14 +199,14 @@ function testTSLSupported(files, gameId) {
 
 function installTSLContent(api) {
   api.showErrorNotification('Invalid Mod',
-    'Vortex cannot install TSLPatcher as a mod - this is a separate utility application which should be installed and used separately.', { allowReport: false });
+                            'Vortex cannot install TSLPatcher as a mod - this is a separate utility application which should be installed and used separately.', { allowReport: false });
   return Promise.reject(new util.ProcessCanceled('Invalid mod'));
 }
 
 function installContent(files,
-                destinationPath,
-                gameId,
-                progressDelegate) {
+                        destinationPath,
+                        gameId,
+                        progressDelegate) {
   // Copy over everything
   const instructions = files
     .filter(file => path.extname(file) !== '')

@@ -6,8 +6,8 @@ import { ModLimitPatcher } from './modLimitPatch';
 const MOD_LIMIT_THRESHOLD = 24;
 
 export async function testModLimitBreach(
-    api: types.IExtensionApi,
-    limitPatcher: ModLimitPatcher): Promise<types.ITestResult> {
+  api: types.IExtensionApi,
+  limitPatcher: ModLimitPatcher): Promise<types.ITestResult> {
   const t = api.translate;
   const state: types.IState = api.store.getState();
   const isSuppressed = util.getSafe(state, getSuppressModLimitBranch(), false);

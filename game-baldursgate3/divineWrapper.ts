@@ -103,7 +103,9 @@ async function divine(api: types.IExtensionApi,
       }
       if (!stdoutStr && action !== 'list-package') {
         return resolve({ stdout: '', returnCode: 2 })
-      }      
+      }
+      
+      const stdoutStr = stdout.toString();
       if (['error', 'fatal'].some(x => stdoutStr.toLowerCase().startsWith(x))) {
         // Really?
         return reject(new Error(`divine.exe failed: ${stdoutStr}`));

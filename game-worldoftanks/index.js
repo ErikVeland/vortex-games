@@ -16,7 +16,7 @@ function findGame() {
   return new Promise((resolve, reject) => {
     try {
       if (isWindows() && winapi) {
-        winapi.WithRegOpen('HKEY_CURRENT_USER', 'Software\\Wargaming.net\\Launcher\\Apps\\wot', hkey => {
+        if (isWindows() && winapi) { winapi.WithRegOpen('HKEY_CURRENT_USER', 'Software\\Wargaming.net\\Launcher\\Apps\\wot', hkey => {
           const keys = winapi.RegEnumValues(hkey);
           // the keys seem to be a hash or something, but even
           // on a vanilla installation there are two entries, both
@@ -30,6 +30,7 @@ function findGame() {
         });
       } else {
         return resolve(null);
+      }
       }
     } catch (err) {
       return reject(err);

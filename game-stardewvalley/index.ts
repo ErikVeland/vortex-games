@@ -5,7 +5,7 @@ import React from 'react';
 import * as semver from 'semver';
 import turbowalk from 'turbowalk';
 import { actions, fs, log, selectors, util, types } from 'vortex-api';
-import * as winapi from 'winapi-bindings';
+import winapi from 'winapi-bindings';
 import CompatibilityIcon from './CompatibilityIcon';
 import { SMAPI_QUERY_FREQUENCY } from './constants';
 

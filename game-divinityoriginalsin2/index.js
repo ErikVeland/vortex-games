@@ -1,7 +1,12 @@
 const { app, remote } = require('electron');
 const path = require('path');
 const { fs, selectors, util } = require('vortex-api');
-const winapi = require('winapi-bindings');
+const { isWindows } = require('vortex-api');
+// Platform detection
+const isWindows = () => process.platform === 'win32';
+
+// Conditional winapi import - only available on Windows
+const winapi = isWindows() ? require('winapi-bindings') : undefined;
 
 const GAME_ID = 'divinityoriginalsin2';
 const GAME_ID_DE = 'divinityoriginalsin2definitiveedition';
@@ -18,10 +23,10 @@ function modPathDE() {
 
 function findGame() {
   try {
-    const instPath = winapi.RegGetValue(
+    const instPath = (isWindows() && winapi) ? winapi.RegGetValue(
       'HKEY_LOCAL_MACHINE',
       'SOFTWARE\\WOW6432Node\\GOG.com\\Games\\1584823040',
-      'path');
+      'path') : null : null;
     if (!instPath) {
       throw new Error('empty registry key');
     }

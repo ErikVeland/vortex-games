@@ -1,6 +1,7 @@
 const path = require('path');
 const { fs, selectors, util } = require('vortex-api');
 const { default: IniParser, WinapiFormat } = require('vortex-parse-ini');
+const { isWindows } = require('vortex-api');
 
 const { MORROWIND_ID } = require('./constants');
 

@@ -1,5 +1,6 @@
 const path = require('path');
 const { fs, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
 const STEAM_DLL = 'steam_api.dll';
 

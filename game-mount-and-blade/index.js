@@ -1,3 +1,4 @@
+const { isWindows } = require('vortex-api');
 /* 
   Mount & Blade games consist of 2 modTypes:
     - Entire module based mods which include a module.ini file.
@@ -6,7 +7,11 @@
 */
 const Promise = require('bluebird');
 const path = require('path');
-const winapi = require('winapi-bindings');
+// Platform detection
+const isWindows = () => process.platform === 'win32';
+
+// Conditional winapi import - only available on Windows
+const winapi = isWindows() ? require('winapi-bindings') : undefined;
 const { fs, util } = require('vortex-api');
 
 // Mount and Blade module based mods have a module.ini
@@ -85,10 +90,10 @@ function findGame(mabGame) {
   const { name, regPath } = mabGame;
 
   try {
-    const instPath = winapi.RegGetValue(
+    const instPath = (isWindows() && winapi) ? winapi.RegGetValue(
       'HKEY_LOCAL_MACHINE',
       regPath,
-      'InstallLocation');
+      'InstallLocation') : null : null;
     if (!instPath) {
       throw new Error('empty registry key');
     }

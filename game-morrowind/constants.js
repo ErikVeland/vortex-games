@@ -1,3 +1,4 @@
+const { isWindows } = require('vortex-api');
 const MORROWIND_ID = 'morrowind';
 const NATIVE_PLUGINS = ['Bloodmoon.esm', 'Morrowind.esm', 'Tribunal.esm'];
 

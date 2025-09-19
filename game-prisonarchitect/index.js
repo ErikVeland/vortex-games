@@ -1,6 +1,11 @@
 const Promise = require('bluebird');
 const path = require('path');
-const winapi = require('winapi-bindings');
+const { isWindows } = require('vortex-api');
+// Platform detection
+const isWindows = () => process.platform === 'win32';
+
+// Conditional winapi import - only available on Windows
+const winapi = isWindows() ? require('winapi-bindings') : undefined;
 const { fs, util } = require('vortex-api');
 const { app, remote } = require('electron');
 
@@ -27,10 +32,10 @@ function requiresLauncher(gamePath) {
 
 function findGame() {
   try {
-    const instPath = winapi.RegGetValue(
+    const instPath = (isWindows() && winapi) ? winapi.RegGetValue(
       'HKEY_LOCAL_MACHINE',
       'SOFTWARE\\Introversion Software\\Prison Architect',
-      'Install Dir');
+      'Install Dir') : null : null;
     if (!instPath) {
       throw new Error('empty registry key');
     }

@@ -1,3 +1,4 @@
+import { isWindows } from 'vortex-api';
 /* eslint-disable */
 import * as React from 'react';
 import { types, tooltip } from 'vortex-api';

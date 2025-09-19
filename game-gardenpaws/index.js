@@ -1,9 +1,13 @@
 const Promise = require('bluebird');
 const path = require('path');
-const winapi = require('winapi-bindings');
 const { actions, fs, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
+// Platform detection
 const IsWin = process.platform === 'win32';
+
+// Conditional winapi import - only available on Windows
+const winapi = IsWin ? require('winapi-bindings') : undefined;
 
 const UMM_DLL = 'UnityModManager.dll';
 
@@ -39,12 +43,12 @@ function main(context) {
   }
 
   function readRegistryKey(hive, key, name) {
-    if (!IsWin) {
+    if (!IsWin || !winapi) {
       return Promise.reject(new util.UnsupportedOperatingSystem());
     }
 
     try {
-      const instPath = winapi.RegGetValue(hive, key, name);
+      const instPath = (isWindows() && winapi) ? winapi.RegGetValue(hive, key, name) : null;
       if (!instPath) {
         throw new Error('empty registry key');
       }

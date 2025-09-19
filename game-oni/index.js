@@ -1,6 +1,11 @@
 const Promise = require('bluebird');
 const path = require('path');
-const winapi = require('winapi-bindings');
+const { isWindows } = require('vortex-api');
+// Platform detection
+const isWindows = () => process.platform === 'win32';
+
+// Conditional winapi import - only available on Windows
+const winapi = isWindows() ? require('winapi-bindings') : undefined;
 const { actions, fs, util } = require('vortex-api');
 
 const IsWin = process.platform === 'win32';
@@ -42,7 +47,7 @@ function main(context) {
     }
 
     try {
-      const instPath = winapi.RegGetValue(hive, key, name);
+      const instPath = (isWindows() && winapi) ? winapi.RegGetValue(hive, key, name) : null;
       if (!instPath) {
         throw new Error('empty registry key');
       }

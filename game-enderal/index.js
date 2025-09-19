@@ -1,12 +1,17 @@
 const { util } = require('vortex-api');
-const winapi = require('winapi-bindings');
+const { isWindows } = require('vortex-api');
+// Platform detection
+const isWindows = () => process.platform === 'win32';
+
+// Conditional winapi import - only available on Windows
+const winapi = isWindows() ? require('winapi-bindings') : undefined;
 
 function findGame() {
   try {
-    const instPath = winapi.RegGetValue(
+    const instPath = (isWindows() && winapi) ? winapi.RegGetValue(
       'HKEY_CURRENT_USER',
       'Software\\SureAI\\Enderal',
-      'Install_Path');
+      'Install_Path') : null : null;
     if (!instPath) {
       throw new Error('empty registry key');
     }

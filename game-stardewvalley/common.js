@@ -1,3 +1,4 @@
+const { isWindows } = require('vortex-api');
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getBundledMods = exports.NOTIF_ACTIVITY_CONFIG_MOD = exports._SMAPI_BUNDLED_MODS = exports.MOD_TYPE_CONFIG = exports.RGX_INVALID_CHARS_WINDOWS = exports.MOD_MANIFEST = exports.MOD_CONFIG = exports.GAME_ID = void 0;

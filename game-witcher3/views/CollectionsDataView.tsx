@@ -4,6 +4,7 @@ import { Button, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 
+import { isWindows } from 'vortex-api';
 import { ComponentEx, EmptyPlaceholder, FlexLayout, Icon,
          selectors, types, util } from 'vortex-api';
 

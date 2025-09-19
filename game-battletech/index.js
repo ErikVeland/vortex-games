@@ -2,6 +2,7 @@ const Promise = require('bluebird');
 const { app, remote } = require('electron');
 const path = require('path');
 const { fs, selectors, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
 const appUni = remote !== undefined ? remote.app : app;
 

@@ -1,6 +1,7 @@
 const Promise = require('bluebird');
 const path = require('path');
 const { fs, selectors, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
 const GAME_ID = 'conanexiles';
 const STEAMAPP_ID = 440900;

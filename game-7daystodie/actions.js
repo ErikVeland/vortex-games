@@ -1,3 +1,4 @@
+const { isWindows } = require('vortex-api');
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.setPreviousLO = exports.setUDF = exports.setPrefixOffset = void 0;

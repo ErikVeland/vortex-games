@@ -2,6 +2,7 @@ const Promise = require('bluebird');
 const { remote } = require('electron');
 const path = require('path');
 const { fs, log, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
 function findGame() {
   return util.steam.findByName('Factorio')

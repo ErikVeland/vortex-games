@@ -1,3 +1,4 @@
+import { isWindows } from 'vortex-api';
 /* eslint-disable */
 import React from 'react';
 import path from 'path';

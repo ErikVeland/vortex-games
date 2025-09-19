@@ -1,6 +1,7 @@
 const path = require('path');
 const { fs, util, log } = require('vortex-api');
 const { remote } = require('electron');
+const { isWindows } = require('vortex-api');
 
 const XCOM2_ID = 'xcom2';
 const WOTC_ID = 'xcom2-wotc';

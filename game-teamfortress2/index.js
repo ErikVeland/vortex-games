@@ -1,5 +1,10 @@
+const { isWindows } = require('vortex-api');
 const Promise = require('bluebird');
-const winapi = require('winapi-bindings');
+// Platform detection
+const isWindows = () => process.platform === 'win32';
+
+// Conditional winapi import - only available on Windows
+const winapi = isWindows() ? require('winapi-bindings') : undefined;
 const { fs, log, util } = require('vortex-api');
 const path = require('path');
 const MOD_FILE_EXT = ".vpk";

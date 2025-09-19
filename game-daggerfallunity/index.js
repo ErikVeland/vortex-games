@@ -1,6 +1,7 @@
 const { app, remote } = require('electron');
 const path = require('path');
 const { fs, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
 const appUni = app || remote.app;
 const LOCAL_LOW = path.resolve(appUni.getPath('appData'),

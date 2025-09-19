@@ -2,6 +2,7 @@ const Promise = require('bluebird');
 const path = require('path');
 const { actions, fs, FlexLayout, log, selectors, util } = require('vortex-api');
 const semver = require('semver');
+const { isWindows } = require('vortex-api');
 
 const { app, remote } = require('electron');
 const uniApp = app || remote.app;

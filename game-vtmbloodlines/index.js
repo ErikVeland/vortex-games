@@ -1,6 +1,11 @@
 const Promise = require('bluebird');
 const path = require('path');
-const winapi = require('winapi-bindings');
+const { isWindows } = require('vortex-api');
+// Platform detection
+const isWindows = () => process.platform === 'win32';
+
+// Conditional winapi import - only available on Windows
+const winapi = isWindows() ? require('winapi-bindings') : undefined;
 const { fs, util } = require('vortex-api');
 
 const { default: IniParser, WinapiFormat } = require('vortex-parse-ini');
@@ -11,7 +16,7 @@ const GOG_ID = '1207659240';
 
 function readRegistryKey(hive, key, name) {
   try {
-    const instPath = winapi.RegGetValue(hive, key, name);
+    const instPath = (isWindows() && winapi) ? winapi.RegGetValue(hive, key, name) : null;
     if (!instPath) {
       throw new Error('empty registry key');
     }

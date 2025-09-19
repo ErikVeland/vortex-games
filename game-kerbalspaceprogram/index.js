@@ -2,6 +2,7 @@ const Promise = require('bluebird');
 const { remote } = require('electron');
 const path = require('path');
 const { fs, log, selectors, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
 const extension =  process.platform == 'linux'
   ? '.x86_64'

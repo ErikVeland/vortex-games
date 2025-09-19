@@ -2,6 +2,7 @@ const Promise = require('bluebird');
 const { parseStringPromise } = require('xml2js');
 const path = require('path');
 const { fs, log, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
 function findGame() {
   return util.steam.findByName('X Rebirth')

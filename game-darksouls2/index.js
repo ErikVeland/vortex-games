@@ -1,5 +1,6 @@
 const path = require('path');
 const { log, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
 const EXEC_PATH = path.join('Game', 'DarksoulsII.exe');
 

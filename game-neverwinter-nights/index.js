@@ -1,7 +1,12 @@
 const Promise = require('bluebird');
 const { remote } = require('electron');
 const path = require('path');
-const winapi = require('winapi-bindings');
+const { isWindows } = require('vortex-api');
+// Platform detection
+const isWindows = () => process.platform === 'win32';
+
+// Conditional winapi import - only available on Windows
+const winapi = isWindows() ? require('winapi-bindings') : undefined;
 const { fs, util } = require('vortex-api');
 
 const NWN_GAME_ID = 'nwn';
@@ -50,10 +55,10 @@ function findGame() {
     return Promise.reject(new Error('Currently only discovered on windows'));
   }
   try {
-    const instPath = winapi.RegGetValue(
+    const instPath = (isWindows() && winapi) ? winapi.RegGetValue(
       'HKEY_LOCAL_MACHINE',
       'Software\\Wow6432Node\\Bioware\\NWN\\Neverwinter',
-      'Location');
+      'Location') : null : null;
     if (!instPath) {
       throw new Error('empty registry key');
     }
@@ -65,10 +70,10 @@ function findGame() {
 
 function findGameEE() {
   try {
-    const instPath = winapi.RegGetValue(
+    const instPath = (isWindows() && winapi) ? winapi.RegGetValue(
       'HKEY_LOCAL_MACHINE',
       'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 704450',
-      'InstallLocation');
+      'InstallLocation') : null : null;
     if (!instPath) {
       throw new Error('empty registry key');
     }

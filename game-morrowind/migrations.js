@@ -2,6 +2,7 @@ const path = require('path');
 const semver = require('semver');
 const { actions, selectors, util } = require('vortex-api');
 const { MORROWIND_ID } = require('./constants');
+const { isWindows } = require('vortex-api');
 
 const walk = require('turbowalk').default;
 

@@ -2,7 +2,12 @@ const Promise = require('bluebird');
 const { app, remote } = require('electron');
 const path = require('path');
 const { fs, selectors, util } = require('vortex-api');
-const winapi = require('winapi-bindings');
+const { isWindows } = require('vortex-api');
+// Platform detection
+const isWindows = () => process.platform === 'win32';
+
+// Conditional winapi import - only available on Windows
+const winapi = isWindows() ? require('winapi-bindings') : undefined;
 
 const appUni = app || remote.app;
 const GAME_ID = 'galacticcivilizations3';
@@ -14,10 +19,10 @@ const FACTION_EXT = '.faction';
 
 function findGame() {
   try {
-    const instPath = winapi.RegGetValue(
+    const instPath = (isWindows() && winapi) ? winapi.RegGetValue(
       'HKEY_LOCAL_MACHINE',
-      `SOFTWARE\\WOW6432Node\\GOG.com\\Games\\${GOG_ID.toString()}`,
-      'path');
+      `SOFTWARE\\WOW6432Node\\GOG.com\\Games\\${GOG_ID.toString() : null}`,
+      'path') : null;
     if (!instPath) {
       throw new Error('empty registry key');
     }

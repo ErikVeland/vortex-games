@@ -1,3 +1,4 @@
+const { isWindows } = require('vortex-api');
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MODS_ORDER_FILENAME = exports.GAME_ID = void 0;

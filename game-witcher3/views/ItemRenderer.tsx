@@ -7,6 +7,7 @@ import { actions, Icon, LoadOrderIndexInput, tooltip, selectors, types, util, Ma
 import { I18N_NAMESPACE, GAME_ID } from '../common';
 import { IItemRendererProps } from '../types';
 
+import { isWindows } from 'vortex-api';
 interface IActionProps {
   onSetLoadOrder: (profileId: string, loadOrder: types.LoadOrder) => void;
 }

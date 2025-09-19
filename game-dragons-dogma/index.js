@@ -2,6 +2,7 @@ const path = require('path');
 const semver = require('semver');
 const Promise = require('bluebird');
 const { fs, log, selectors, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
 const GAME_ID = 'dragonsdogma';
 const I18N_NAMESPACE = `game-${GAME_ID}`;

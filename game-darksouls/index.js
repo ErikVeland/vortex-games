@@ -2,6 +2,7 @@ const Promise = require('bluebird');
 const path = require('path');
 const thunk = require('redux-thunk');
 const { actions, fs, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
 const STEAM_DLL = 'steam_api.dll';
 

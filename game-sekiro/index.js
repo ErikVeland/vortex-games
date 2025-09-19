@@ -1,6 +1,7 @@
 const Promise = require('bluebird');
 const path = require('path');
 const { actions, fs, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
 const GAME_ID = 'sekiro';
 const STEAM_ID = 814380;

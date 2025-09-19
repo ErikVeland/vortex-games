@@ -1,3 +1,4 @@
+const { isWindows } = require('vortex-api');
 // domain name
 const GAME_ID = 'bladeandsorcery';
 const I18N_NAMESPACE = 'game-bladeandsorcery';

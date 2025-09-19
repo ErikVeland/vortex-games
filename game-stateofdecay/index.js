@@ -1,5 +1,6 @@
 const path = require('path');
 const { log, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
 function findGame() {
   return util.steam.findByName('State of Decay: Year-One')

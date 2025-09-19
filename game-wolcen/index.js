@@ -4,6 +4,7 @@ const _ = require('lodash');
 const path = require('path');
 const { fs, log, selectors, util } = require('vortex-api');
 const { Builder, parseStringPromise } = require('xml2js');
+const { isWindows } = require('vortex-api');
 
 const appUni = remote !== undefined ? remote.app : app;
 

@@ -5,6 +5,7 @@ const shortid = require('shortid');
 const walk = require('turbowalk').default;
 const { actions, fs, log, selectors, util } = require('vortex-api');
 const { default: IniParser, WinapiFormat } = require('vortex-parse-ini');
+const { isWindows } = require('vortex-api');
 
 const GAME_ID = 'microsoftflightsimulator';
 const MS_APPID = 'Microsoft.FlightSimulator';

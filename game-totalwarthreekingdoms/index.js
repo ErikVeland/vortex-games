@@ -1,5 +1,6 @@
 const path = require('path');
 const { fs, log, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
 // Nexus Mods id for the game.
 const TW3KINDOMS_ID = 'totalwarthreekingdoms';

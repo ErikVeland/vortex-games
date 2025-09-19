@@ -1,3 +1,4 @@
+const { isWindows } = require('vortex-api');
 function main(context) {
   context.registerGameStub({
     id: 'starfield',

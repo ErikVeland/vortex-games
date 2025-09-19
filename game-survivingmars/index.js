@@ -1,7 +1,12 @@
 const Promise = require('bluebird');
 const { remote } = require('electron');
 const path = require('path');
-const winapi = require('winapi-bindings');
+const { isWindows } = require('vortex-api');
+// Platform detection
+const isWindows = () => process.platform === 'win32';
+
+// Conditional winapi import - only available on Windows
+const winapi = isWindows() ? require('winapi-bindings') : undefined;
 const { log, fs, util } = require('vortex-api');
 
 // Mods for Surviving Mars normally have this file cont#aining mod data.
@@ -18,10 +23,10 @@ const EPIC_EXE = 'MarsEpic.exe';
 
 function findGame() {
   try {
-    const instPath = winapi.RegGetValue(
+    const instPath = (isWindows() && winapi) ? winapi.RegGetValue(
       'HKEY_LOCAL_MACHINE',
       'SOFTWARE\\WOW6432Node\\GOG.com\\Games\\2129244347',
-      'PATH');
+      'PATH') : null : null;
     if (!instPath) {
       throw new Error('empty registry key');
     }

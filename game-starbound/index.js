@@ -1,5 +1,6 @@
 const path = require('path');
 const { fs, log, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
 const MS_ID = 'Chucklefish.StarboundWindows10Edition';
 

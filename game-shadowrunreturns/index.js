@@ -1,5 +1,6 @@
 const path = require('path');
 const { fs, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
 function findGame() {
   return util.steam.findByName('Shadowrun Returns')

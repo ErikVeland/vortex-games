@@ -1,6 +1,7 @@
 const Promise = require('bluebird');
 const path = require('path');
 const semver = require('semver');
+const { isWindows } = require('vortex-api');
 
 const { GAME_ID, MOD_MANIFEST, BAS_EXEC } = require('./common');
 const { isOfficialModType, getModName, streamingAssetsPath, getGameVersion, missingGameJsonError } = require('./util');

@@ -2,7 +2,9 @@
 import Bluebird from 'bluebird';
 import path from 'path';
 import { actions, fs, log, selectors, types, util } from 'vortex-api';
-import winapi from 'winapi-bindings';
+// Conditional winapi import - only available on Windows
+const isWindows = () => process.platform === 'win32';
+const winapi = isWindows() ? require('winapi-bindings') : undefined;
 
 import { getPersistentLoadOrder, migrate148 } from './migrations';
 
@@ -79,10 +81,10 @@ const tools: types.ITool[] = [
 
 function findGame(): Bluebird<string> {
   try {
-    const instPath = winapi.RegGetValue(
+    const instPath = (isWindows() && winapi) ? winapi.RegGetValue(
       'HKEY_LOCAL_MACHINE',
       'Software\\CD Project Red\\The Witcher 3',
-      'InstallFolder');
+      'InstallFolder') : null;
     if (!instPath) {
       throw new Error('empty registry key');
     }

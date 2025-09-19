@@ -1,3 +1,4 @@
+const { isWindows } = require('vortex-api');
 // Star Wars: Knights of the Old Republic mods (kotor1 and kotor2) 
 //  are usually extracted to the override folder found within the game's
 //  directory. Most modders provide a full override directory structure
@@ -9,7 +10,11 @@
 
 const Promise = require('bluebird');
 const path = require('path');
-const winapi = require('winapi-bindings');
+// Platform detection
+const isWindows = () => process.platform === 'win32';
+
+// Conditional winapi import - only available on Windows
+const winapi = isWindows() ? require('winapi-bindings') : undefined;
 const { fs, selectors, util } = require('vortex-api');
 
 const STEAM_DLL = 'steam_api.dll';
@@ -54,7 +59,7 @@ function requiresLauncher(gamePath) {
 
 function readRegistryKey(hive, key, name) {
   try {
-    const instPath = winapi.RegGetValue(hive, key, name);
+    const instPath = (isWindows() && winapi) ? winapi.RegGetValue(hive, key, name) : null;
     if (!instPath) {
       throw new Error('empty registry key');
     }

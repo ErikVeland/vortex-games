@@ -1,6 +1,7 @@
 const { remote } = require('electron');
 const { fs, log, util } = require('vortex-api');
 const path = require('path');
+const { isWindows } = require('vortex-api');
 
 const executable =  process.platform == 'linux'
   ? 'Grimrock.bin.x86'

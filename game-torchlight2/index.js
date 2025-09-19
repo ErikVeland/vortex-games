@@ -1,6 +1,11 @@
 const path = require('path');
 const { app, remote } = require('electron');
-const winapi = require('winapi-bindings');
+const { isWindows } = require('vortex-api');
+// Platform detection
+const isWindows = () => process.platform === 'win32';
+
+// Conditional winapi import - only available on Windows
+const winapi = isWindows() ? require('winapi-bindings') : undefined;
 const { fs, util } = require('vortex-api');
 
 const appUni = app || remote.app;
@@ -23,9 +28,9 @@ function modPath() {
 
 function findGame() {
   try {
-    const instPath = winapi.RegGetValue('HKEY_LOCAL_MACHINE',
+    const instPath = (isWindows() && winapi) ? winapi.RegGetValue('HKEY_LOCAL_MACHINE',
                                         'SOFTWARE\\WOW6432Node\\runic games\\torchlight ii',
-                                        'instdir');
+                                        'instdir') : null : null;
     if (!instPath) {
       throw new Error('empty registry key');
     }

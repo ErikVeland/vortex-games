@@ -1,6 +1,7 @@
 const { getFileVersion, getFileVersionLocalized } = require('exe-version');
 const path = require('path');
 const { fs, selectors, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
 const GAME_ID = 'skyrimse';
 const GOG_ID = '1711230643';

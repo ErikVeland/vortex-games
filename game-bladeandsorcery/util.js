@@ -2,6 +2,7 @@ const path = require('path');
 const semver = require('semver');
 const rjson = require('relaxed-json');
 const { fs, log, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
 const { getFileVersion, getProductVersion } = require('exe-version');
 

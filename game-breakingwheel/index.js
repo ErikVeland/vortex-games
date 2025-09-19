@@ -1,4 +1,5 @@
 const { log, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
 const path = require('path');
 

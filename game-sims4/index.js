@@ -1,5 +1,10 @@
 const Promise = require('bluebird');
-const winapi = require('winapi-bindings');
+const { isWindows } = require('vortex-api');
+// Platform detection
+const isWindows = () => process.platform === 'win32';
+
+// Conditional winapi import - only available on Windows
+const winapi = isWindows() ? require('winapi-bindings') : undefined;
 
 const { remote, app } = require('electron');
 const path = require('path');
@@ -30,10 +35,10 @@ function findGame() {
     return Promise.reject(new Error('Currently only discovered on windows'));
   }
   try {
-    const instPath = winapi.RegGetValue(
+    const instPath = (isWindows() && winapi) ? winapi.RegGetValue(
       'HKEY_LOCAL_MACHINE',
       'Software\\Maxis\\The Sims 4',
-      'Install Dir');
+      'Install Dir') : null : null;
     if (!instPath) {
       throw new Error('empty registry key');
     }
@@ -49,10 +54,10 @@ function getLocale(eaPath) {
   let locale;
   // check registry for the locale
   try {
-    const candidate = winapi.RegGetValue(
+    const candidate = (isWindows() && winapi) ? winapi.RegGetValue(
       'HKEY_LOCAL_MACHINE',
       'Software\\Maxis\\The Sims 4',
-      'Locale');
+      'Locale') : null : null;
     if (!!candidate) {
       locale = candidate.value;
     }

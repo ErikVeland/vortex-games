@@ -1,6 +1,7 @@
 const Promise = require('bluebird');
 const path = require('path');
 const { fs, util, log } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 const STEAMAPP_ID = '22300';
 const STEAMAPP_ID2 = '22370';
 const GOG_ID = '1454315831';

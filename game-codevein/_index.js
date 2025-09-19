@@ -1,3 +1,4 @@
+const { isWindows } = require('vortex-api');
 // @ts-check
 
 const Promise = require('bluebird');

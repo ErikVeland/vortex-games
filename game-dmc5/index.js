@@ -1,3 +1,4 @@
+const { isWindows } = require('vortex-api');
 const GAME_ID = 'devilmaycry5';
 
 function main(context) {

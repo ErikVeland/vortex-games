@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 import { genCollectionLoadOrder, getModId } from './util';
 
+import { isWindows } from 'vortex-api';
 import { ComponentEx, EmptyPlaceholder, FlexLayout,
          selectors, types, Usage, util } from 'vortex-api';
 

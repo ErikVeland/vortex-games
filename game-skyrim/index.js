@@ -1,22 +1,32 @@
 const Promise = require('bluebird');
 const path = require('path');
 const { util } = require('vortex-api');
-const winapi = require('winapi-bindings');
+const { isWindows } = require('vortex-api');
+
+// Platform detection
+const isWindows = () => process.platform === 'win32';
+
+// Conditional winapi import - only available on Windows
+const winapi = isWindows() ? require('winapi-bindings') : undefined;
 
 function findGame() {
-  try {
-    const instPath = winapi.RegGetValue(
-      'HKEY_LOCAL_MACHINE',
-      'Software\\Wow6432Node\\Bethesda Softworks\\skyrim',
-      'Installed Path');
-    if (!instPath) {
-      throw new Error('empty registry key');
+  if (isWindows() && winapi) {
+    try {
+      const instPath = (isWindows() && winapi) ? winapi.RegGetValue(
+        'HKEY_LOCAL_MACHINE',
+        'Software\\Wow6432Node\\Bethesda Softworks\\skyrim',
+        'Installed Path');
+      if (!instPath) {
+        throw new Error('empty registry key');
+      }
+      return Promise.resolve(instPath.value);
+    } catch (err) {
+      // Fall through to Steam detection
     }
-    return Promise.resolve(instPath.value);
-  } catch (err) {
-    return util.steam.findByName('The Elder Scrolls V: Skyrim')
-      .then(game => game.gamePath);
   }
+  
+  return util.steam.findByName('The Elder Scrolls V: Skyrim')
+    .then(game => game.gamePath);
 }
 
 const tools = [

@@ -1,7 +1,12 @@
 const fs = require('fs');
 const { parseString } = require('xml2js');
 const path = require('path');
-const winapi = require('winapi-bindings');
+const { isWindows } = require('vortex-api');
+// Platform detection
+const isWindows = () => process.platform === 'win32';
+
+// Conditional winapi import - only available on Windows
+const winapi = isWindows() ? require('winapi-bindings') : undefined;
 const { util } = require('vortex-api');
 
 function findGame() {
@@ -10,18 +15,22 @@ function findGame() {
   }
   return new Promise((resolve, reject) => {
     try {
-      winapi.WithRegOpen('HKEY_CURRENT_USER', 'Software\\Wargaming.net\\Launcher\\Apps\\wot', hkey => {
-        const keys = winapi.RegEnumValues(hkey);
-        // the keys seem to be a hash or something, but even
-        // on a vanilla installation there are two entries, both
-        // with the same value (though different capitalization)
-        if (keys.length > 0) {
-          const value = winapi.RegGetValue(hkey, '', keys[0].key);
-          return resolve(value.value);
-        } else {
-          return resolve(null);
-        }
-      });
+      if (isWindows() && winapi) {
+        winapi.WithRegOpen('HKEY_CURRENT_USER', 'Software\\Wargaming.net\\Launcher\\Apps\\wot', hkey => {
+          const keys = winapi.RegEnumValues(hkey);
+          // the keys seem to be a hash or something, but even
+          // on a vanilla installation there are two entries, both
+          // with the same value (though different capitalization)
+          if (keys.length > 0) {
+            const value = winapi.RegGetValue(hkey, '', keys[0].key);
+            return resolve(value.value);
+          } else {
+            return resolve(null);
+          }
+        });
+      } else {
+        return resolve(null);
+      }
     } catch (err) {
       return reject(err);
     }

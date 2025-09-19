@@ -1,3 +1,4 @@
+const { isWindows } = require('vortex-api');
 const GAME_ID = 'residentevil32020';
 
 function main(context) {

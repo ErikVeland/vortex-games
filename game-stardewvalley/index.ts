@@ -5,7 +5,9 @@ import React from 'react';
 import * as semver from 'semver';
 import turbowalk from 'turbowalk';
 import { actions, fs, log, selectors, util, types } from 'vortex-api';
-import winapi from 'winapi-bindings';
+// Conditional winapi import - only available on Windows
+const isWindows = () => process.platform === 'win32';
+const winapi = isWindows() ? require('winapi-bindings') : undefined;
 import CompatibilityIcon from './CompatibilityIcon';
 import { SMAPI_QUERY_FREQUENCY } from './constants';
 
@@ -247,7 +249,7 @@ class StardewValley implements types.IGame {
   async readRegistryKeyAsync(hive, key, name)
   {
     try {
-      const instPath = winapi.RegGetValue(hive, key, name);
+      const instPath = (isWindows() && winapi) ? winapi.RegGetValue(hive, key, name) : null;
       if (!instPath) {
         throw new Error('empty registry key');
       }

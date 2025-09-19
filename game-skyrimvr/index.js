@@ -1,8 +1,13 @@
+const { isWindows } = require('vortex-api');
 /* eslint-disable */
 const { getFileVersion, getFileVersionLocalized } = require('exe-version');
 const path = require('path');
 const { actions, selectors, util } = require('vortex-api');
-const winapi = require('winapi-bindings');
+// Platform detection
+const isWindows = () => process.platform === 'win32';
+
+// Conditional winapi import - only available on Windows
+const winapi = isWindows() ? require('winapi-bindings') : undefined;
 
 const GAME_ID = 'skyrimvr';
 const ESL_ENABLER_LIB = 'skyrimvresl.dll';
@@ -10,10 +15,10 @@ const ESL_NOTIF_ID = 'skyvr-esl-enabler-notif';
 
 function findGame() {
   try {
-    const instPath = winapi.RegGetValue(
+    const instPath = (isWindows() && winapi) ? winapi.RegGetValue(
       'HKEY_LOCAL_MACHINE',
       'Software\\Wow6432Node\\Bethesda Softworks\\Skyrim VR',
-      'Installed Path');
+      'Installed Path') : null : null;
     if (!instPath) {
       throw new Error('empty registry key');
     }

@@ -1,6 +1,7 @@
 const path = require('path');
 const Promise = require('bluebird');
 const { fs, util } = require('vortex-api');
+const { isWindows } = require('vortex-api');
 
 const { parseStringPromise } = require('xml2js');
 

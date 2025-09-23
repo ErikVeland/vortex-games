@@ -3,7 +3,7 @@ import { Button, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 
-import { isWindows } from '../../../src/util/platform';
+import { isWindows } from '../../../../src/util/platform';
 import { ComponentEx, EmptyPlaceholder, FlexLayout, Icon,
          selectors, types, util } from 'vortex-api';
 

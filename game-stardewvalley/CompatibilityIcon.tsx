@@ -2,7 +2,7 @@ import React from 'react';
 import { tooltip, types } from 'vortex-api';
 import { CompatibilityStatus } from './types';
 
-import { isWindows } from '../../../../src/util/platform';
+import { isWindows } from '../../../src/util/platform';
 export interface ICompatibilityIconProps {
   t: types.TFunction,
   mod: types.IMod,

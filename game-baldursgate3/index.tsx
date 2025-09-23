@@ -1,4 +1,4 @@
-import { isWindows } from 'vortex-api';
+import { isWindows } from '../../../../src/util/platform';
 /* eslint-disable */
 /**
  * Important - although we no longer define the info panel here,

@@ -7,7 +7,7 @@ import { Icon, More, util } from 'vortex-api';
 
 import { GAME_ID, I18N_NAMESPACE } from './common';
 
-import { isWindows } from 'vortex-api';
+import { isWindows } from '../../../../src/util/platform';
 interface IProps {
   onSelectUDF: () => Promise<string>;
 }

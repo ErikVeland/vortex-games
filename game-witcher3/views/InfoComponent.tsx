@@ -1,4 +1,4 @@
-import { isWindows } from 'vortex-api';
+import { isWindows } from '../../../../src/util/platform';
 /* eslint-disable */
 import * as React from 'react';
 import * as BS from 'react-bootstrap';

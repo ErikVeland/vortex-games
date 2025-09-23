@@ -6,7 +6,7 @@ import { Toggle, More, selectors, types } from 'vortex-api';
 import { setRecommendations } from './actions';
 import { GAME_ID } from './common';
 
-import { isWindows } from 'vortex-api';
+import { isWindows } from '../../../../src/util/platform';
 interface IBaseProps {
   onMergeConfigToggle: (profileId: string, enabled: boolean) => Promise<void>;
 }

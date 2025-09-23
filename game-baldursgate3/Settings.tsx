@@ -5,7 +5,7 @@ import { useSelector, useStore } from 'react-redux';
 import { Toggle, types } from 'vortex-api';
 import { setAutoExportLoadOrder } from './actions';
 
-import { isWindows } from 'vortex-api';
+import { isWindows } from '../../../../src/util/platform';
 function Settings() {
 
   const store = useStore();

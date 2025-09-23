@@ -1,6 +1,6 @@
 import { types } from 'vortex-api';
 
-import { isWindows } from 'vortex-api';
+import { isWindows } from '../../../../src/util/platform';
 export type LOFormat = 'pre-v6' | 'v6' | 'v7' | 'v8';
 
 export interface IPakInfo {

@@ -7,7 +7,7 @@ import { getActivePlayerProfile, logDebug, profilesPath } from './util';
 import { setBG3ExtensionVersion } from './actions';
 import { DEBUG } from './common';
 
-import { isWindows } from 'vortex-api';
+import { isWindows } from '../../../../src/util/platform';
 export async function migrate(api: types.IExtensionApi): Promise<void> {
   const bg3ProfileId = await getActivePlayerProfile(api);
   const settingsPath: string = path.join(profilesPath(), bg3ProfileId, 'modsettings.lsx');

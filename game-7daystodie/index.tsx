@@ -14,7 +14,7 @@ import { ILoadOrderEntry, IProps } from './types';
 import { genProps, getModName, getModsPath, makePrefix, reversePrefix, selectUDF, toBlue } from './util';
 import Settings from './Settings';
 
-import { isWindows } from 'vortex-api';
+import { isWindows } from '../../../src/util/platform';
 const STEAM_ID = '251570';
 const STEAM_DLL = 'steamclient64.dll';
 

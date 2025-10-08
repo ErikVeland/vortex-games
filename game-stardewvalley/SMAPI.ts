@@ -78,7 +78,7 @@ export async function downloadSMAPI(api: types.IExtensionApi, update?: boolean) 
 
     const nxmUrl = `nxm://${GAME_ID}/mods/${SMAPI_MOD_ID}/files/${file.file_id}`;
     const dlId = await util.toPromise<string>(cb =>
-      api.events.emit('start-download', [nxmUrl], dlInfo, undefined, cb, undefined, { allowInstall: false }));
+      api.events.emit('start-download', [nxmUrl], dlInfo, undefined, cb, 'always', { allowInstall: false }));
     const modId = await util.toPromise<string>(cb =>
       api.events.emit('start-install-download', dlId, { allowAutoEnable: false }, cb));
     const profileId = selectors.lastActiveProfileForGame(api.getState(), GAME_ID);

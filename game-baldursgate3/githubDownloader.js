@@ -202,7 +202,7 @@ function startDownload(api, downloadLink) {
                 api.store.dispatch(vortex_api_1.actions.setModEnabled(profileId, modId, true));
                 return Promise.resolve();
             });
-        }, 'ask');
+        }, 'always');
     });
 }
 function resolveDownloadLink(currentReleases) {

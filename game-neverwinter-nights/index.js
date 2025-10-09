@@ -2,7 +2,6 @@ const Promise = require('bluebird');
 const { remote } = require('electron');
 const path = require('path');
 const { isWindows } = require('vortex-api');
-// Platform detection
 
 // Conditional winapi import - only available on Windows
 const winapi = isWindows() ? require('winapi-bindings') : undefined;

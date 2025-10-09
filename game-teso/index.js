@@ -3,7 +3,6 @@ const { isWindows } = require('vortex-api');
 
 const { remote } = require('electron');
 const path = require('path');
-// Platform detection
 
 // Conditional winapi import - only available on Windows
 const winapi = isWindows() ? require('winapi-bindings') : undefined;

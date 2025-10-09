@@ -40,7 +40,6 @@ const react_1 = __importDefault(require("react"));
 const semver = __importStar(require("semver"));
 const turbowalk_1 = __importDefault(require("turbowalk"));
 const vortex_api_1 = require("vortex-api");
-const isWindows = () => process.platform === 'win32';
 const winapi = isWindows() ? require('winapi-bindings') : undefined;
 const CompatibilityIcon_1 = __importDefault(require("./CompatibilityIcon"));
 const constants_1 = require("./constants");

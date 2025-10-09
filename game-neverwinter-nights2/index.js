@@ -5,7 +5,6 @@ const { fs, util } = require('vortex-api');
 const { isWindows } = require('vortex-api');
 
 // Platform detection
-const isWindows = () => process.platform === 'win32';
 
 // Conditional winapi import - only available on Windows
 const winapi = isWindows() ? require('winapi-bindings') : undefined;

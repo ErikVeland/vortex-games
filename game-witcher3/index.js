@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const bluebird_1 = __importDefault(require("bluebird"));
 const path_1 = __importDefault(require("path"));
 const vortex_api_1 = require("vortex-api");
-const isWindows = () => process.platform === 'win32';
 const winapi = isWindows() ? require('winapi-bindings') : undefined;
 const migrations_1 = require("./migrations");
 const collections_1 = require("./collections/collections");

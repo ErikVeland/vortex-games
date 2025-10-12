@@ -5,8 +5,9 @@ import React from 'react';
 import * as semver from 'semver';
 import turbowalk from 'turbowalk';
 import { actions, fs, log, selectors, util, types } from 'vortex-api';
+import { isWindows } from '../../../src/util/platform';
+
 // Conditional winapi import - only available on Windows
-const isWindows = () => process.platform === 'win32';
 const winapi = isWindows() ? require('winapi-bindings') : undefined;
 import CompatibilityIcon from './CompatibilityIcon';
 import { SMAPI_QUERY_FREQUENCY } from './constants';

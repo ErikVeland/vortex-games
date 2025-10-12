@@ -2,8 +2,8 @@
 import Bluebird from 'bluebird';
 import path from 'path';
 import { actions, fs, log, selectors, types, util } from 'vortex-api';
+import { isWindows } from '../../../src/util/platform';
 // Conditional winapi import - only available on Windows
-const isWindows = () => process.platform === 'win32';
 const winapi = isWindows() ? require('winapi-bindings') : undefined;
 
 import { getPersistentLoadOrder, migrate148 } from './migrations';

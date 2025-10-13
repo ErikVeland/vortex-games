@@ -7,7 +7,7 @@ import { listPackage } from './divineWrapper';
 import { IPakInfo } from './types';
 import { extractPakInfoImpl, logDebug } from './util';
 
-import { LRUCache } from 'lru-cache';
+import LRUCache = require('lru-cache');
 
 export interface ICacheEntry {
   lastModified: number;

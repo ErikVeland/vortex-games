@@ -2,6 +2,7 @@ const path = require('path');
 const { fs, selectors, util } = require('vortex-api');
 const { default: IniParser, WinapiFormat } = require('vortex-parse-ini');
 const { isWindows } = require('vortex-api');
+const { promiseMapSeries } = require('../../../src/util/bluebird-migration-helpers.local');
 
 const { MORROWIND_ID } = require('./constants');
 
@@ -101,7 +102,7 @@ async function updatePluginOrder(iniFilePath, plugins) {
 async function updatePluginTimestamps(dataPath, plugins) {
   const offset = 946684800;
   const oneDay = 24 * 60 * 60;
-  return Promise.mapSeries(plugins, (fileName, idx) => {
+  return promiseMapSeries(plugins, (fileName, idx) => {
     const mtime = offset + oneDay * idx;
     return fs.utimesAsync(path.join(dataPath, fileName), mtime, mtime)
       .catch(err => err.code === 'ENOENT'

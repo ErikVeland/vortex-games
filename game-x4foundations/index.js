@@ -2,7 +2,7 @@ const { isWindows } = require('vortex-api');
 /* eslint-disable */
 const { app, remote } = require('electron');
 const Big = require('big.js');
-const Promise = require('bluebird');
+// Bluebird import removed during migration to native Promises
 const { parseStringPromise } = require('xml2js');
 const path = require('path');
 const { fs, log, selectors, util } = require('vortex-api');
@@ -62,7 +62,7 @@ function testSupportedContent(files, gameId) {
 async function parseIndexFiles(indexPath) {
   return fs.readdirAsync(indexPath).then(files => {
     const xmlFiles = files.filter(file => path.extname(file) === '.xml');
-    return Promise.reduce(xmlFiles, (modName, file) => {
+    return promiseReduce(xmlFiles, (modName, file) => {
       return fs.readFileAsync(path.join(indexPath, file))
       .then(async data => {
         if (modName !== '') {
@@ -267,7 +267,7 @@ function migrate101(api, oldVersion) {
   });
 
   const gameInstallationPath = selectors.installPathForGame(state, GAME_ID);
-  return Promise.reduce(modIds, (accum, modId) => {
+  return promiseReduce(modIds, (accum, modId) => {
     const mod = mods[modId];
     const modStagingPath = path.join(gameInstallationPath, mod.installationPath);
     return fs.readdirAsync(modStagingPath)

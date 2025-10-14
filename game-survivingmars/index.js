@@ -1,4 +1,4 @@
-const Promise = require('bluebird');
+// Bluebird import removed during migration to native Promises
 const { remote } = require('electron');
 const path = require('path');
 const { isWindows } = require('vortex-api');

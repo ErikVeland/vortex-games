@@ -2,7 +2,7 @@
 import { actions, fs, log, selectors, types, util } from 'vortex-api';
 import path from 'path';
 import * as semver from 'semver';
-import Bluebird from 'bluebird';
+// TODO: Remove Bluebird import - using native Promise;
 
 import { GAME_ID, LO_FILE_NAME, NOTIF_IMPORT_ACTIVITY } from './common';
 import { BG3Pak, IModNode, IModSettings, IProps, IRootNode } from './types';
@@ -684,7 +684,7 @@ async function readPAKs(api: types.IExtensionApi) : Promise<Array<ICacheEntry>> 
           return undefined;
         }
       };
-      return Bluebird.resolve(func());
+      return Promise.resolve(func());
     });
   }));
   api.dismissNotification('bg3-reading-paks-activity');

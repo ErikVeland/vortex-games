@@ -1,5 +1,5 @@
 const { isWindows } = require('vortex-api');
-const Promise = require('bluebird');
+// Bluebird import removed during migration to native Promises
 
 // Conditional winapi import - only available on Windows
 const winapi = isWindows() ? require('winapi-bindings') : undefined;

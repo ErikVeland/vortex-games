@@ -1,4 +1,4 @@
-const Promise = require('bluebird');
+// Bluebird import removed during migration to native Promises
 const { app, remote } = require('electron');
 const _ = require('lodash');
 const path = require('path');

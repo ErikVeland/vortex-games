@@ -1,6 +1,7 @@
 const path = require('path');
 const semver = require('semver');
-const Promise = require('bluebird');
+// Bluebird import removed during migration to native Promises
+const { promiseEach } = require('../../../src/util/bluebird-migration-helpers.local');
 const { fs, log, selectors, util } = require('vortex-api');
 const { isWindows } = require('vortex-api');
 
@@ -30,7 +31,7 @@ function prepareForModding(discovery, context) {
 function walkAsync(dir) {
   let entries = [];
   return fs.readdirAsync(dir).then(files => {
-    return Promise.each(files, file => {
+    return promiseEach(files, file => {
       const fullPath = path.join(dir, file);
       return fs.statAsync(fullPath).then(stats => {
         if (stats.isDirectory()) {
@@ -129,7 +130,7 @@ function migrate101(api, oldVersion) {
 
   // The user has pre-existing mods - let the nightmare begin.
   const installPath = selectors.installPathForGame(state, GAME_ID);
-  return Promise.each(Object.keys(mods), key => {
+  return promiseEach(Object.keys(mods), key => {
     const modEntry = mods[key];
     const modPath = path.join(installPath, modEntry.installationPath);
     return walkAsync(modPath).then(entries => {
@@ -143,7 +144,7 @@ function migrate101(api, oldVersion) {
 
       return (isRomDir)
         ? fs.ensureDirAsync(newRomDir).then(() =>
-          Promise.reduce(entries, (accum, file) => {
+          promiseReduce(entries, (accum, file) => {
             const segs = file.split(path.sep).filter(seg => !!seg);
             if (path.extname(segs[segs.length - 1]) !== '') {
               accum['files'] = [].concat(accum['files'] || [], file);
@@ -151,7 +152,7 @@ function migrate101(api, oldVersion) {
               accum['dirs'] = [].concat(accum['dirs'] || [], file);
             }
             return accum;
-          }, {})).then(filtered => Promise.each(filtered.files, file => {
+          }, {})).then(filtered => promiseEach(filtered.files, file => {
           const relPath = path.relative(modPath, file);
           const newFilePath = path.join(modPath, 'rom', relPath);
 
@@ -159,7 +160,7 @@ function migrate101(api, oldVersion) {
         }).then(() => {
           if (filtered.dirs !== undefined) {
             const sorted = filtered.dirs.sort((a, b) => b.length - a.length);
-            return Promise.each(sorted, dir => fs.removeAsync(dir));
+            return promiseEach(sorted, dir => fs.removeAsync(dir));
           }
         })).catch(err => {
           log('error', 'migration failed', err);

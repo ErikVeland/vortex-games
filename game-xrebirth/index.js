@@ -1,4 +1,4 @@
-const Promise = require('bluebird');
+// Bluebird import removed during migration to native Promises
 const { parseStringPromise } = require('xml2js');
 const path = require('path');
 const { fs, log, util } = require('vortex-api');

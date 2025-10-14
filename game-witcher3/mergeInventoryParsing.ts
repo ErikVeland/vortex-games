@@ -1,5 +1,5 @@
 /* eslint-disable */
-import Bluebird from 'bluebird';
+// TODO: Remove Bluebird import - using native Promise;
 import path from 'path';
 import { parseStringPromise } from 'xml2js';
 
@@ -14,7 +14,7 @@ function getMergeInventory(api: types.IExtensionApi) {
   const discovery = util.getSafe(state, ['settings', 'gameMode', 'discovered', GAME_ID], undefined);
   const scriptMerger = util.getSafe(discovery, ['tools', SCRIPT_MERGER_ID], undefined);
   if ((scriptMerger === undefined) || (scriptMerger.path === undefined)) {
-    return Bluebird.resolve([]);
+    return Promise.resolve([]);
   }
 
   return fs.readFileAsync(path.join(path.dirname(scriptMerger.path), MERGE_INV_MANIFEST))
@@ -83,7 +83,7 @@ export function getMergedModNames(api: types.IExtensionApi) {
     });
 }
 
-export function getNamesOfMergedMods(api: types.IExtensionApi): Bluebird<string[]> {
+export function getNamesOfMergedMods(api: types.IExtensionApi): Promise<string[]> {
   // This retrieves a unique list of mod names included in the merged mod
   return getMergeInventory(api)
     .then(async mergeInventory => {

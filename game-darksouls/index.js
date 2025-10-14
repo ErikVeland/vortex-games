@@ -1,4 +1,4 @@
-const Promise = require('bluebird');
+// Bluebird import removed during migration to native Promises
 const path = require('path');
 const thunk = require('redux-thunk');
 const { actions, fs, util } = require('vortex-api');

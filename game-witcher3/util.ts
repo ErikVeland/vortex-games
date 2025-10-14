@@ -1,5 +1,5 @@
 /* eslint-disable */
-import Bluebird from 'bluebird';
+// TODO: Remove Bluebird import - using native Promise;
 import { fs, log, types, selectors, util } from 'vortex-api';
 
 import IniStructure from './iniParser';
@@ -380,8 +380,8 @@ export function suppressEventHandlers(api: types.IExtensionApi) {
   return (state.session.notifications.notifications.some(n => n.id === ACTIVITY_ID_IMPORTING_LOADORDER));
 }
 
-export function toBlue<T>(func: (...args: any[]) => Promise<T>): (...args: any[]) => Bluebird<T> {
-  return (...args: any[]) => Bluebird.resolve(func(...args));
+export function toBlue<T>(func: (...args: any[]) => Promise<T>): (...args: any[]) => Promise<T> {
+  return (...args: any[]) => Promise.resolve(func(...args));
 }
 
 export async function fileExists(filePath: string): Promise<boolean> {

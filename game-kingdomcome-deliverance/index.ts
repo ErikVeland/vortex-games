@@ -1,9 +1,25 @@
-import Bluebird from 'bluebird';
+// TODO: Remove Bluebird import - using native Promise;
 import * as React from 'react';
 import * as BS from 'react-bootstrap';
 import { connect } from 'react-redux';
 import path from 'path';
 import { actions, fs, DraggableList, FlexLayout, types, log, MainPage, selectors, util } from 'vortex-api';
+
+// Promise helper functions to replace Bluebird methods
+const promiseEach = async (array, iteratorFunction) => {
+  for (let i = 0; i < array.length; i++) {
+    await iteratorFunction(array[i], i, array.length);
+  }
+  return array;
+};
+
+const promiseReduce = async (array, reducerFunction, initialValue) => {
+  let accumulator = initialValue;
+  for (let i = 0; i < array.length; i++) {
+    accumulator = await reducerFunction(accumulator, array[i], i, array.length);
+  }
+  return accumulator;
+};
 
 import { IKCDCollectionsData } from './collections/types';
 import { genCollectionsData, parseCollectionsData } from './collections/collections';
@@ -79,7 +95,7 @@ function getExecutable(discoveredPath) {
 function prepareForModding(context, discovery) {
   const state = context.api.store.getState();
   const profile = selectors.activeProfile(state);
-  return fs.ensureDirWritableAsync(path.join(discovery.path, 'Mods'), () => Bluebird.resolve())
+  return fs.ensureDirWritableAsync(path.join(discovery.path, 'Mods'), () => Promise.resolve())
     .then(() => getCurrentOrder(path.join(discovery.path, modsPath(), MODS_ORDER_FILENAME)))
     .catch(err => err.code === 'ENOENT' ? Promise.resolve([]) : Promise.reject(err))
     .then(data => setNewOrder({ context, profile },
@@ -93,7 +109,7 @@ function getCurrentOrder(modOrderFilepath) {
 function walkAsync(dir) {
   let entries = [];
   return fs.readdirAsync(dir).then(files => {
-    return Bluebird.each(files, file => {
+    return promiseEach(files, file => {
       const fullPath = path.join(dir, file);
       return fs.statAsync(fullPath).then(stats => {
         if (stats.isDirectory()) {
@@ -124,7 +140,7 @@ function readModsFolder(modsFolder, api) {
   // Reads the provided folderPath and attempts to identify all
   //  currently deployed mods.
   return fs.readdirAsync(modsFolder)
-    .then(entries => Bluebird.reduce(entries, (accum, current) => {
+    .then(entries => promiseReduce(entries, (accum, current) => {
       const currentPath = path.join(modsFolder, current);
       return fs.readdirAsync(currentPath)
         .then(modFiles => {
@@ -179,7 +195,7 @@ function refreshModList(context, discoveryPath) {
   const disabled = modKeys.filter(dis => !enabled.includes(dis));
 
   const extL = input => path.extname(input).toLowerCase();
-  return Bluebird.reduce(enabled, (accum, mod) => {
+  return promiseReduce(enabled, (accum, mod) => {
     if (mods[mod]?.installationPath === undefined) {
       return accum;
     }

@@ -1,4 +1,4 @@
-const Promise = require('bluebird');
+// Bluebird import removed during migration to native Promises
 const path = require('path');
 const { actions, fs, FlexLayout, log, selectors, util } = require('vortex-api');
 const semver = require('semver');
@@ -112,7 +112,7 @@ async function getDeployedManaged(context, modType) {
   const deploymentManifest = await util.getManifest(context.api, modType, GAME_ID);
   const gameManifestFiles = deploymentManifest.files.filter(entry =>
     path.basename(entry.relPath).toLowerCase() === MOD_MANIFEST);
-  return Promise.reduce(gameManifestFiles, async (accum, manifest) => {
+  return promiseReduce(gameManifestFiles, async (accum, manifest) => {
     try {
       const modName = await getModName(path.join(deployPath, manifest.relPath), 'Name');
       accum.push({ modName, modId: manifest.source });

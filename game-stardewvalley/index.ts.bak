@@ -1,7 +1,7 @@
 /* eslint-disable */
-// Bluebird import removed during migration to native Promises
+// TODO: Remove Bluebird import - using native Promise;
 import { IQuery } from 'modmeta-db';
-import * as React from 'react';
+import React from 'react';
 import * as semver from 'semver';
 import turbowalk from 'turbowalk';
 import { actions, fs, log, selectors, util, types } from 'vortex-api';
@@ -112,7 +112,7 @@ class StardewValley implements types.IGame {
    * This may be left undefined but then the tool/game can only be discovered by searching the disk
    * which is slow and only happens manually.
    */
-  public queryPath = toBlue(async () => {
+  public queryPath = async () => {
     // check Steam
     const game = await util.GameStoreHelper.findByAppId(['413150', '1453375253', 'ConcernedApe.StardewValleyPC']);
     if (game)
@@ -124,7 +124,7 @@ class StardewValley implements types.IGame {
       if (await this.getPathExistsAsync(defaultPath))
         return defaultPath;
     }
-  });
+  };
 
   /**
    * Get the path of the tool executable relative to the tool base path, i.e. binaries/UT3.exe or
@@ -156,7 +156,7 @@ class StardewValley implements types.IGame {
    * before the game mode is activated.
    * @param {IDiscoveryResult} discovery -- basic info about the game being loaded.
    */
-  public setup = toBlue(async (discovery: types.IDiscoveryResult) => {
+  public setup = async (discovery: types.IDiscoveryResult) => {
     // Make sure the folder for SMAPI mods exists.
     try {
       await fs.ensureDirWritableAsync(path.join(discovery.path, defaultModsRelPath()));
@@ -194,7 +194,8 @@ class StardewValley implements types.IGame {
         } },
       ]);
     }*/
-  });
+  };
+
 
   private recommendSmapi() {
     const smapiMod = findSMAPIMod(this.context.api);
@@ -227,11 +228,13 @@ class StardewValley implements types.IGame {
    * Asynchronously check whether a file or directory path exists.
    * @param {string} path - The file or directory path.
    */
-  private async getPathExistsAsync(path: string): Promise<boolean> {
+  async getPathExistsAsync(path)
+  {
     try {
-      await fs.statAsync(path);
-      return true;
-    } catch (err) {
+     await fs.statAsync(path);
+     return true;
+    }
+    catch(err) {
       return false;
     }
   }
@@ -242,20 +245,21 @@ class StardewValley implements types.IGame {
    * @param {string} key - The registry key.
    * @param {string} name - The name of the value to read.
    */
-  private async readRegistryKeyAsync(hive: string, key: string, name: string): Promise<string | undefined> {
+  async readRegistryKeyAsync(hive, key, name)
+  {
     try {
       const instPath = (isWindows() && winapi) ? winapi.RegGetValue(hive, key, name) : null;
       if (!instPath) {
         throw new Error('empty registry key');
       }
-      return instPath.value;
+      return Promise.resolve(instPath.value);
     } catch (err) {
-      return undefined;
+      return Promise.resolve(undefined);
     }
   }
 }
 
-function testRootFolder(files: string[], gameId: string) {
+function testRootFolder(files, gameId) {
   // We assume that any mod containing "/Content/" in its directory
   //  structure is meant to be deployed to the root folder.
   const filtered = files.filter(file => file.endsWith(path.sep))
@@ -267,7 +271,7 @@ function testRootFolder(files: string[], gameId: string) {
   return Promise.resolve({ supported, requiredFiles: [] });
 }
 
-function installRootFolder(files: string[], destinationPath: string) {
+function installRootFolder(files, destinationPath) {
   // We're going to deploy "/Content/" and whatever folders come alongside it.
   //  i.e. SomeMod.7z
   //  Will be deployed     => ../SomeMod/Content/
@@ -290,14 +294,14 @@ function installRootFolder(files: string[], destinationPath: string) {
   return Promise.resolve({ instructions });
 }
 
-function isValidManifest(filePath: string) {
+function isValidManifest(filePath) {
   const segments = filePath.toLowerCase().split(path.sep);
   const isManifestFile = segments[segments.length - 1] === MANIFEST_FILE;
   const isLocale = segments.includes('locale');
   return isManifestFile && !isLocale;
 }
 
-function testSupported(files: string[], gameId: string) {
+function testSupported(files, gameId) {
   const supported = (gameId === GAME_ID)
     && (files.find(isValidManifest) !== undefined)
     && (files.find(file => {
@@ -436,14 +440,14 @@ async function install(api,
   // Removed .then() block that was causing syntax error
 }
 
-function isSMAPIModType(instructions: types.IInstruction[]) {
+function isSMAPIModType(instructions) {
   // Find the SMAPI exe file.
   const smapiData = instructions.find(inst => (inst.type === 'copy') && inst.source.endsWith(SMAPI_EXE));
 
   return Promise.resolve(smapiData !== undefined);
 }
 
-function testSMAPI(files: string[], gameId: string) {
+function testSMAPI(files, gameId) {
   // Make sure the download contains the SMAPI data archive.s
   const supported = (gameId === GAME_ID) && (files.find(file =>
     path.basename(file) === SMAPI_DLL) !== undefined);
@@ -453,7 +457,7 @@ function testSMAPI(files: string[], gameId: string) {
   });
 }
 
-async function installSMAPI(getDiscoveryPath: () => string, files: string[], destinationPath: string) {
+async function installSMAPI(getDiscoveryPath, files, destinationPath) {
   const folder = process.platform === 'win32'
     ? 'windows'
     : process.platform === 'linux'
@@ -531,7 +535,7 @@ async function installSMAPI(getDiscoveryPath: () => string, files: string[], des
   return Promise.resolve({ instructions });
 }
 
-async function showSMAPILog(api: types.IExtensionApi, basePath: string, logFile: string) {
+async function showSMAPILog(api, basePath, logFile) {
   const logData = await fs.readFileAsync(path.join(basePath, logFile), { encoding: 'utf-8' });
   await api.showDialog('info', 'SMAPI Log', {
     text: 'Your SMAPI log is displayed below. To share it, click "Copy & Share" which will copy it to your clipboard and open the SMAPI log sharing website. ' +
@@ -545,7 +549,7 @@ async function showSMAPILog(api: types.IExtensionApi, basePath: string, logFile:
   }, { label: 'Close', action: () => undefined }]);
 }
 
-async function onShowSMAPILog(api: types.IExtensionApi) {
+async function onShowSMAPILog(api) {
   //Read and display the log.
   const basePath = path.join(util.getVortexPath('appData'), 'stardewvalley', 'errorlogs');
   try {
@@ -626,7 +630,7 @@ function updateConflictInfo(api: types.IExtensionApi,
     } else {
       return status as CompatibilityStatus;
     }
-  }
+  };
 
   const compatibilityPrio = (item: ISMAPIResult) => compatibilityOptions.indexOf(stat(item));
 
@@ -740,15 +744,10 @@ function init(context: types.IExtensionContext) {
   }), () => selectors.activeGameId(context.api.getState()) === GAME_ID, 150);
 
   // Register our SMAPI mod type and installer. Note: This currently flags an error in Vortex on installing correctly.
-  context.registerInstaller('smapi-installer', 30, toBlue(testSMAPI), toBlue((files, dest) => Promise.resolve(installSMAPI(getDiscoveryPath, files, dest))));
+  context.registerInstaller('smapi-installer', 30, toBlue(testSMAPI), (files, dest) => Promise.resolve(installSMAPI(getDiscoveryPath, files, dest)));
   context.registerInstaller('sdvrootfolder', 50, toBlue(testRootFolder), toBlue(installRootFolder));
   context.registerInstaller('stardew-valley-installer', 50, toBlue(testSupported),
-    toBlue(async (files, destinationPath) => {
-      const instructionArrays = await install(context.api, dependencyManager, files, destinationPath);
-      // Flatten the array of instruction arrays into a single array
-      const instructions = instructionArrays.flat();
-      return { instructions };
-    }));
+    (files, destinationPath) => Promise.resolve(install(context.api, dependencyManager, files, destinationPath)));
 
   context.registerModType('SMAPI', 30, gameId => gameId === GAME_ID, getSMAPIPath, toBlue(isSMAPIModType));
   context.registerModType(MOD_TYPE_CONFIG, 30, (gameId) => (gameId === GAME_ID),
@@ -781,7 +780,7 @@ function init(context: types.IExtensionContext) {
       const hasModsFolder = copyInstructions.find(instr =>
         instr.destination.startsWith(defaultModsRelPath() + path.sep)) !== undefined;
       const hasContentFolder = copyInstructions.find(instr =>
-        instr.destination.startsWith('Content' + path.sep)) !== undefined;
+        instr.destination.startsWith('Content' + path.sep)) !== undefined
 
       return (hasManifest)
         ? Promise.resolve(hasContentFolder && hasModsFolder)
@@ -901,7 +900,6 @@ function init(context: types.IExtensionContext) {
           log('error', 'failed to update conflict info', err.message);
         });
     });
-  });
+  }
 }
-
 export default init;

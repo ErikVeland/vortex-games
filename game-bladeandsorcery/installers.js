@@ -1,6 +1,6 @@
 const path = require('path');
 const semver = require('semver');
-const Promise = require('bluebird');
+// Bluebird import removed during migration to native Promises
 const { util } = require('vortex-api');
 const { isWindows } = require('vortex-api');
 
@@ -104,7 +104,7 @@ async function installOfficialMod(files,
         return Promise.resolve(instructions);
       });
 
-  return Promise.map(manifestFiles, manFile => createInstructions(manFile))
+  return promiseMap(manifestFiles, manFile => createInstructions(manFile))
     .then(manifestMods => {
       const instructions = manifestMods.reduce((prev, instructions) => {
         prev = prev.concat(instructions);

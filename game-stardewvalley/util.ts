@@ -2,6 +2,7 @@ import { parse } from 'relaxed-json';
 import * as semver from 'semver';
 import turbowalk, { IEntry, IWalkOptions } from 'turbowalk';
 import { fs, util } from 'vortex-api';
+// Bluebird import removed during migration to native Promises
 import { ISDVModManifest } from './types';
 
 export function defaultModsRelPath(): string {
@@ -70,4 +71,12 @@ export async function deleteFolder(dirPath: string, walkOptions?: IWalkOptions):
   } catch (err) {
     return Promise.reject(err);
   }
+}
+
+/**
+ * toBlue is a migration function that converts Promise<T> to Promise<T> for compatibility
+ * with the Vortex API during the Bluebird to native Promise migration.
+ */
+export function toBlue<T>(func: (...args: any[]) => Promise<T>): (...args: any[]) => Promise<T> {
+  return (...args: any[]) => Promise.resolve(func(...args));
 }

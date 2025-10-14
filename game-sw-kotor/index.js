@@ -8,7 +8,7 @@ const { isWindows } = require('vortex-api');
 //  We will let the default installer to take over when the override structure
 //  isn't detected.
 
-const Promise = require('bluebird');
+// Bluebird import removed during migration to native Promises
 const path = require('path');
 
 // Conditional winapi import - only available on Windows

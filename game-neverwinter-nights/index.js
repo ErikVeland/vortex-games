@@ -1,4 +1,4 @@
-const Promise = require('bluebird');
+// Bluebird import removed during migration to native Promises
 const { remote } = require('electron');
 const path = require('path');
 const { isWindows } = require('vortex-api');
@@ -141,8 +141,7 @@ function prepareForModding(discovery, context) {
         : Promise.resolve();
     });
 
-  return Promise.map(Object.keys(MOD_EXT_DESTINATION),
-                     ext => fs.ensureDirAsync(path.join(context === undefined ? discovery.path : modPathEE(), MOD_EXT_DESTINATION[ext])))
+  return promiseMap(Object.keys(MOD_EXT_DESTINATION), ext => fs.ensureDirAsync(path.join(context === undefined ? discovery.path : modPathEE(), MOD_EXT_DESTINATION[ext])))
     .then(() => testModsPath());
 }
 

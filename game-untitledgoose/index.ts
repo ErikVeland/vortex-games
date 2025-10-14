@@ -1,4 +1,4 @@
-import Bluebird from 'bluebird';
+// TODO: Remove Bluebird import - using native Promise;
 import path from 'path';
 import { fs, log, types, util } from 'vortex-api';
 
@@ -7,7 +7,7 @@ import { EPIC_APP_ID, GAME_ID } from './statics';
 import { toBlue } from './util';
 
 const BIX_CONFIG = 'BepInEx.cfg';
-function ensureBIXConfig(discovery: types.IDiscoveryResult): Bluebird<void> {
+function ensureBIXConfig(discovery: types.IDiscoveryResult): Promise<void> {
   const src = path.join(__dirname, BIX_CONFIG);
   const dest = path.join(discovery.path, 'BepInEx', 'config', BIX_CONFIG);
   return fs.ensureDirWritableAsync(path.dirname(dest))
@@ -17,7 +17,7 @@ function ensureBIXConfig(discovery: types.IDiscoveryResult): Bluebird<void> {
         log('warn', 'failed to write BIX config', err);
       }
       // nop - this is a nice to have, not a must.
-      return Bluebird.resolve();
+      return Promise.resolve();
     });
 }
 
@@ -39,7 +39,7 @@ function modPath() {
 
 function prepareForModding(discovery: types.IDiscoveryResult) {
   if (discovery?.path === undefined) {
-    return Bluebird.reject(new util.ProcessCanceled('Game not discovered'));
+    return Promise.reject(new util.ProcessCanceled('Game not discovered'));
   }
 
   return ensureBIXConfig(discovery)

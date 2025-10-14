@@ -9,7 +9,7 @@ import { isWindows } from '../../../src/util/platform';
  * Removing files from bundled plugins without stubbing the extension
  *  can potentially break the extension on the user's end.
  */
-import Bluebird from 'bluebird';
+// TODO: Remove Bluebird import - using native Promise;
 import * as _ from 'lodash';
 import * as path from 'path';
 import * as React from 'react';
@@ -107,7 +107,7 @@ async function prepareForModding(api: types.IExtensionApi, discovery) {
   }
   
   return fs.statAsync(mp)
-    .catch(() => fs.ensureDirWritableAsync(mp, () => Bluebird.resolve() as any))
+    .catch(() => fs.ensureDirWritableAsync(mp, () => Promise.resolve() as any))
     .finally(() => ensureGlobalProfile(api, discovery));
 }
 
@@ -300,28 +300,28 @@ function main(context: types.IExtensionContext) {
     200,
     (gameId) => gameId === GAME_ID,
     (_game) => modsPath(),
-    (instructions) => Bluebird.resolve(isLoose(instructions)),
+    (instructions) => Promise.resolve(isLoose(instructions)),
   );
   context.registerModType(
     MOD_TYPE_REPLACER,
     100,
     (gameId) => gameId === GAME_ID,
     (_game) => getGamePath(context.api),
-    (instructions) => Bluebird.resolve(isReplacer(context.api, instructions)),
+    (instructions) => Promise.resolve(isReplacer(context.api, instructions)),
   );
   context.registerModType(
     MOD_TYPE_LSLIB,
     99,
     (gameId) => gameId === GAME_ID,
     (_game) => getGamePath(context.api),
-    (instructions) => Bluebird.resolve(isLSLib(instructions)),
+    (instructions) => Promise.resolve(isLSLib(instructions)),
   );
   context.registerModType(
     MOD_TYPE_BG3SE,
     100,
     (gameId) => gameId === GAME_ID,
     (_game) => path.join(getGamePath(context.api), 'bin'),
-    (instructions) => Bluebird.resolve(isBG3SE(instructions)),
+    (instructions) => Promise.resolve(isBG3SE(instructions)),
   );
 
   context.registerAction('mods-action-icons', 999, 'update', {}, 'Check Mod Versions', (instanceIds) => {
@@ -331,7 +331,7 @@ function main(context: types.IExtensionContext) {
   context.once(() => {
     context.api.onAsync('did-deploy', (profileId, profileType, deployment) => {
       forceRefresh(context.api);
-      return Bluebird.resolve();
+      return Promise.resolve();
     });
   });
 

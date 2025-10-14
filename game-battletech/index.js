@@ -1,4 +1,4 @@
-const Promise = require('bluebird');
+// Bluebird import removed during migration to native Promises
 const { app, remote } = require('electron');
 const path = require('path');
 const { fs, selectors, util } = require('vortex-api');
@@ -78,7 +78,7 @@ function main(context) {
       const modPaths = game.getModPaths(discovery.path);
       const installPath = selectors.installPathForGame(state, GAME_ID);
 
-      await Promise.map(files, async entry => {
+      await promiseMap(files, async entry => {
         // only act if we definitively know which mod owns the file
         if (entry.candidates.length === 1) {
           const mod = util.getSafe(state.persistent.mods, [GAME_ID, entry.candidates[0]], undefined);

@@ -1,7 +1,7 @@
 const { isWindows } = require('vortex-api');
 // @ts-check
 
-const Promise = require('bluebird');
+// Bluebird import removed during migration to native Promises
 const React = require('react');
 const BS = require('react-bootstrap');
 const { connect } = require('react-redux');

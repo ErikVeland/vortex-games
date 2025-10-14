@@ -1,4 +1,4 @@
-import Bluebird from 'bluebird';
+// TODO: Remove Bluebird import - using native Promise;
 import path from 'path';
 import turbowalk from 'turbowalk';
 import { actions, fs, selectors, types, util } from 'vortex-api';
@@ -26,19 +26,19 @@ export const relaunchExt = (api: types.IExtensionApi) => {
     text: 'The extension requires a restart to complete the UDF setup. '
         + 'The extension will now exit - please re-activate it via the games page or dashboard.',
   }, [ { label: 'Restart Extension' } ])
-  .then(async () => {
-    try {
-      await purge(api);
-      const batched = [
-        actions.setDeploymentNecessary(GAME_ID, true),
-        actions.setNextProfile(undefined),
-      ];
-      util.batchDispatch(api.store, batched);
-    } catch (err) {
-      api.showErrorNotification('Failed to set up UDF', err);
-      return Promise.resolve();
-    }
-  });
+    .then(async () => {
+      try {
+        await purge(api);
+        const batched = [
+          actions.setDeploymentNecessary(GAME_ID, true),
+          actions.setNextProfile(undefined),
+        ];
+        util.batchDispatch(api.store, batched);
+      } catch (err) {
+        api.showErrorNotification('Failed to set up UDF', err);
+        return Promise.resolve();
+      }
+    });
 }
 
 export const selectUDF = async (context: types.IExtensionContext) => {
@@ -96,8 +96,8 @@ export function getModsPath(api: types.IExtensionApi): string {
 
 // We _should_ just export this from vortex-api, but I guess it's not wise to make it
 //  easy for users since we want to move away from bluebird in the future ?
-export function toBlue<T>(func: (...args: any[]) => Promise<T>): (...args: any[]) => Bluebird<T> {
-  return (...args: any[]) => Bluebird.resolve(func(...args));
+export function toBlue<T>(func: (...args: any[]) => Promise<T>): (...args: any[]) => Promise<T> {
+  return (...args: any[]) => Promise.resolve(func(...args));
 }
 
 export function genProps(context: types.IExtensionContext, profileId?: string): IProps {

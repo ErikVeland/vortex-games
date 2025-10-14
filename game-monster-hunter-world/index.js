@@ -1,4 +1,5 @@
-const Promise = require('bluebird');
+// Bluebird import removed during migration to native Promises
+const { promiseEach } = require('../../../src/util/bluebird-migration-helpers.local');
 const path = require('path');
 const { isWindows } = require('vortex-api');
 
@@ -109,7 +110,7 @@ function prepareForModding(discovery, api) {
 
   // Check whether Stracker's Loader is installed.
   return fs.ensureDirWritableAsync(path.join(discovery.path, NATIVE_PC_FOLDER), () => Promise.resolve())
-    .then(() => Promise.each(STRACKER_FILES, file => {
+    .then(() => promiseEach(STRACKER_FILES, file => {
       const assemblyPath = path.join(discovery.path, file);
       return fs.statAsync(assemblyPath)
     })

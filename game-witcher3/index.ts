@@ -1,5 +1,5 @@
 /* eslint-disable */
-import Bluebird from 'bluebird';
+// TODO: Remove Bluebird import - using native Promise;
 import path from 'path';
 import { actions, fs, log, selectors, types, util } from 'vortex-api';
 import { isWindows } from '../../../src/util/platform';
@@ -79,7 +79,7 @@ const tools: types.ITool[] = [
   },
 ];
 
-function findGame(): Bluebird<string> {
+function findGame(): Promise<string> {
   try {
     const instPath = (isWindows() && winapi) ? winapi.RegGetValue(
       'HKEY_LOCAL_MACHINE',
@@ -88,7 +88,7 @@ function findGame(): Bluebird<string> {
     if (!instPath) {
       throw new Error('empty registry key');
     }
-    return Bluebird.resolve(instPath.value as string);
+    return Promise.resolve(instPath.value as string);
   } catch (err) {
     return util.GameStoreHelper.findByAppId([
       GOG_ID_GOTY, GOG_ID, GOG_WH_ID, GOG_WH_GOTY,
@@ -169,9 +169,9 @@ function main(context: types.IExtensionContext) {
   context.registerModType('witcher3menumodroot', 20, isTW3(context.api), getTLPath(context.api), testMenuModRoot as any);
   context.registerModType('witcher3tl', 25, isTW3(context.api), getTLPath(context.api), testTL as any);
   context.registerModType('witcher3dlc', 25, isTW3(context.api), getDLCPath(context.api), testDLC as any);
-  context.registerModType('w3modlimitpatcher', 25, isTW3(context.api), getTLPath(context.api), () => Bluebird.resolve(false),
+  context.registerModType('w3modlimitpatcher', 25, isTW3(context.api), getTLPath(context.api), () => Promise.resolve(false),
     { deploymentEssential: false, name: 'Mod Limit Patcher Mod Type' });
-  context.registerModType('witcher3menumoddocuments', 60, isTW3(context.api), getDocumentsPath, () => Bluebird.resolve(false));
+  context.registerModType('witcher3menumoddocuments', 60, isTW3(context.api), getDocumentsPath, () => Promise.resolve(false));
 
   context.registerMerge(canMergeXML(context.api), doMergeXML(context.api) as any, 'witcher3menumodroot');
   // context.registerMerge(canMergeSettings(context.api), doMergeSettings(context.api) as any, 'witcher3menumoddocuments');

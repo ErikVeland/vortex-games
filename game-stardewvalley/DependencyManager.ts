@@ -6,7 +6,7 @@ import { GAME_ID } from './common';
 
 import { parseManifest } from './util';
 
-import path from 'path';
+import * as path from 'path';
 
 type ManifestMap = { [modId: string]: ISDVModManifest[] };
 export default class DependencyManager {

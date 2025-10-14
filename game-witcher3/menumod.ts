@@ -1,9 +1,25 @@
 /* eslint-disable */
 import path from 'path';
-import Bluebird from 'bluebird';
+// TODO: Remove Bluebird import - using native Promise;
 import { actions, fs, log, selectors, types, util } from 'vortex-api';
 const IniParser = require('vortex-parse-ini');
 import { generate } from 'shortid';
+
+// Promise helper functions to replace Bluebird methods
+const promiseEach = async (array, iteratorFunction) => {
+  for (let i = 0; i < array.length; i++) {
+    await iteratorFunction(array[i], i, array.length);
+  }
+  return array;
+};
+
+const promiseReduce = async (array, reducerFunction, initialValue) => {
+  let accumulator = initialValue;
+  for (let i = 0; i < array.length; i++) {
+    accumulator = await reducerFunction(accumulator, array[i], i, array.length);
+  }
+  return accumulator;
+};
 
 import { getPersistentLoadOrder } from './migrations';
 import { prepareFileData, restoreFileData } from './collections/util';
@@ -117,13 +133,13 @@ function populateCache(api: types.IExtensionApi, activeProfile: types.IProfile, 
   };
 
   const stagingFolder = selectors.installPathForGame(state, GAME_ID);
-  return Bluebird.reduce(enabledMods, (accum, mod: types.IMod) => {
+  return promiseReduce(enabledMods, (accum, mod: types.IMod) => {
     if (mod.installationPath === undefined) {
       return accum;
     }
     return getRelevantModEntries(path.join(stagingFolder, mod.installationPath))
       .then(entries => {
-        return Bluebird.each(entries, filepath => {
+        return promiseEach(entries, filepath => {
           return readModData(filepath)
             .then(data => {
               if (data !== undefined) {
@@ -215,16 +231,16 @@ export async function onWillDeploy(api, deployment, activeProfile) {
 
   const keys = Object.keys(fileMap);
   const matcher = (entry) => keys.includes(toFileMapKey(entry.relPath));
-  const newCache = await Bluebird.reduce(keys, async (accum, key) => {
+  const newCache = await promiseReduce(keys, async (accum, key) => {
     if (docFiles.find(matcher) !== undefined) {
       const mergedData = await parser.read(path.join(docModPath, key));
-      await Bluebird.each(fileMap[key], async (iter: ICacheEntry) => {
+      await promiseEach(fileMap[key], async (iter: ICacheEntry) => {
         if (enabledMods.includes(iter.id)) {
           const tempPath = path.join(destinationFolder, key) + generate();
           const modData = await toIniFileObject(iter.data, tempPath);
           const modKeys = Object.keys(modData.data);
           let changed = false;
-          return Bluebird.each(modKeys, modKey => {
+          return promiseEach(modKeys, modKey => {
             if ((mergedData.data[modKey] !== undefined)
               && (modData.data[modKey] !== undefined)
               && (mergedData.data[modKey] !== modData.data[modKey])) {

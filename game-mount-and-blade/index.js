@@ -5,7 +5,7 @@ const { isWindows } = require('vortex-api');
     - Mods without a module.ini will be deployed to the native module
         folder based upon their file extension.
 */
-const Promise = require('bluebird');
+// Bluebird import removed during migration to native Promises
 const path = require('path');
 
 // Conditional winapi import - only available on Windows

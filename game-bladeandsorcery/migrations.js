@@ -1,4 +1,5 @@
-const Promise = require('bluebird');
+// At the top of the file, add the import for our helper
+const { promiseEach } = require('../../../src/util/bluebird-migration-helpers.local');
 const path = require('path');
 const semver = require('semver');
 const { isWindows } = require('vortex-api');
@@ -99,11 +100,11 @@ function migrate020(api, oldVersion) {
       }, []);
       return Promise.resolve({ modTypes, deployedModTypes });
     })
-    .then(res => Promise.each(res.deployedModTypes, modType =>
+    .then(res => promiseEach(res.deployedModTypes, modType =>
       api.emitAndAwait('purge-mods-in-path', GAME_ID, modType, res.modTypes[modType])))
     .then(() => {
       const officialMods = modKeys.filter(key => isOfficialModType(mods[key].type));
-      return Promise.each(officialMods, mod => migrateMod020(api, mods[mod])
+      return promiseEach(officialMods, mod => migrateMod020(api, mods[mod])
         .catch(err => {
           log('error', 'failed to migrate BaS mod', err.message);
           failedToMigrate.push(mod);
@@ -174,17 +175,17 @@ function migrateMod020(api, mod) {
           }));
         const newDirs = [];
         const newFiles = [];
-        return Promise.each(directories, dir => fs.ensureDirWritableAsync(dir.dest).tap(() => newDirs.push(dir.dest)))
-          .then(() => Promise.each(files, file => fs.linkAsync(file.src, file.dest).tap(() => newFiles.push(file.dest))))
+        return promiseEach(directories, dir => fs.ensureDirWritableAsync(dir.dest).tap(() => newDirs.push(dir.dest)))
+          .then(() => promiseEach(files, file => fs.linkAsync(file.src, file.dest).then(() => newFiles.push(file.dest))))
           .catch(err => {
             // migration failed, cleanup all newly created dirs and files
             const dirs = newDirs.sort((a, b) => b.length - a.length);
-            return Promise.each([...newFiles, ...dirs], entry =>
+            return promiseEach([...newFiles, ...dirs], entry =>
               fs.removeAsync(entry).catch(() => Promise.resolve()))
               .then(() => Promise.reject(err))
           })
-          .then(() => Promise.each(files, file => fs.removeAsync(file.src)))
-          .then(() => Promise.each(directories, dir => fs.removeAsync(dir.src)))
+          .then(() => promiseEach(files, file => fs.removeAsync(file.src)))
+          .then(() => promiseEach(directories, dir => fs.removeAsync(dir.src)))
       });
   })
 }

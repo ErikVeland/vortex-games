@@ -1,5 +1,5 @@
 /* eslint-disable */
-import path from 'path';
+import * as path from 'path';
 import { actions, fs, types, selectors, log, util } from 'vortex-api';
 import { NOTIF_ACTIVITY_CONFIG_MOD, GAME_ID, MOD_CONFIG, RGX_INVALID_CHARS_WINDOWS, MOD_TYPE_CONFIG, MOD_MANIFEST, getBundledMods } from './common';
 import { setMergeConfigs } from './actions';

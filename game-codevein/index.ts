@@ -1,4 +1,4 @@
-import Bluebird from 'bluebird';
+// TODO: Remove Bluebird import - using native Promise;
 import path from 'path';
 import { fs, log, selectors, types, util } from 'vortex-api';
 
@@ -151,7 +151,7 @@ const EXECUTABLE = path.join('CodeVein', 'Binaries', 'Win64', 'CodeVein-Win64-Sh
 
 function getGameVersion(gamePath: string) {
   const exeVersion = require('exe-version');
-  return Bluebird.resolve(exeVersion.getProductVersionLocalized(path.join(gamePath, EXECUTABLE)));
+  return Promise.resolve(exeVersion.getProductVersionLocalized(path.join(gamePath, EXECUTABLE)));
 }
 
 function main(context: types.IExtensionContext) {
